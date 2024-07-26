@@ -2,12 +2,13 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 
-const EmojiToast = (message, emoji) => (
-    <View style={styles.emojiToast}>
-        <Text style={styles.text}>{emoji} {message}</Text>
-    </View>
-);
-
+const EmojiToast = ({ message, emoji }) => {
+    return (
+        <View style={styles.emojiToast}>
+            <Text style={styles.text}>{emoji} {message}</Text>
+        </View>
+    );
+}
 const styles = StyleSheet.create({
     emojiToast: {
         padding: 10,

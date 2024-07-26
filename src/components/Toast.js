@@ -1,36 +1,41 @@
-import React, { useEffct, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Animated, StyleSheet, View, Text } from 'react-native';
 
 const Toast = ({ visible, duration, position, children, onHide, style }) => {
-
     const [opacity] = useState(new Animated.Value(0));
 
     useEffect(() => {
         if (visible) {
+            console.log('Toast visible:', children);
             Animated.timing(opacity, {
                 toValue: 1,
-                duration: 1500,
+                duration: 500,
                 useNativeDriver: true,
-            }).start();
+            }).start(() => {
+                console.log('Toast shown:', children);
+            });
 
             if (duration !== Infinity) {
                 setTimeout(() => {
                     Animated.timing(opacity, {
                         toValue: 0,
-                        duration: 1500,
+                        duration: 500,
                         useNativeDriver: true,
-                    }).start(onHide);
+                    }).start(() => {
+                        console.log('Toast hidden:', children);
+                        onHide();
+                    });
                 }, duration);
             }
         }
-    }, [visible]);
+    }, [visible, duration, onHide, opacity, children]);
 
     if (!visible) return null;
 
     return (
         <Animated.View style={[styles.container, { opacity }, position === 'top' ? styles.top : styles.bottom, style]}>
             <View style={styles.toast}>
-                {children}
+                {typeof children === 'string' ? <Text>{children}</Text> : children}
             </View>
         </Animated.View>
     );
@@ -42,6 +47,7 @@ const styles = StyleSheet.create({
         left: 0,
         right: 0,
         alignItems: 'center',
+        zIndex: 9999,  // Ensure the toast is above other elements
     },
     top: {
         top: 50,
@@ -57,4 +63,3 @@ const styles = StyleSheet.create({
 });
 
 export default Toast;
-

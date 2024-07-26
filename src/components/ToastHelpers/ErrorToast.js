@@ -2,11 +2,13 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 
-const ErrorToast = (message) => (
-    <View style={[styles.toast, styles.error]}>
-        <Text style={styles.text}>{message}</Text>
-    </View>
-);
+const ErrorToast = ({ message }) => {
+    return (
+        <View style={[styles.toast, styles.error]}>
+            <Text style={styles.text}>{message}</Text>
+        </View>
+    );
+}
 
 const styles = StyleSheet.create({
     toast: {

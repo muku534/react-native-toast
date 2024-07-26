@@ -2,12 +2,13 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 
-const LoadingToast = (message) => (
-    <View style={[styles.toast, styles.loading]}>
-        <Text style={styles.text}>{message}</Text>
-    </View>
-);
-
+const LoadingToast = ({ message }) => {
+    return (
+        <View style={[styles.toast, styles.loading]}>
+            <Text style={styles.text}>{message}</Text>
+        </View>
+    );
+}
 const styles = StyleSheet.create({
     toast: {
         padding: 10,
