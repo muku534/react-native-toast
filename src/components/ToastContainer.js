@@ -8,12 +8,10 @@ const ToastContainer = () => {
 
     useEffect(() => {
         const handleShow = (toast) => {
-            console.log('Adding toast to state:', toast);
             setToasts((prevToasts) => [...prevToasts, toast]);
         };
 
         const handleRemove = (id) => {
-            console.log('Removing toast from state:', id);
             setToasts((prevToasts) => prevToasts.filter((toast) => toast.id !== id));
         };
 
@@ -34,7 +32,7 @@ const ToastContainer = () => {
                     visible={true}
                     duration={toast.options.duration}
                     position={toast.options.position}
-                    style={[toast.options.style, { top: 0 + index * 65 }]}
+                    style={[toast.options.style, { top: 0 + index * 60 }]}
                     onHide={() => toastManagerInstance.remove(toast.id)}
                 >
                     {toast.content}
@@ -58,4 +56,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default ToastContainer;
+export default React.memo(ToastContainer);
