@@ -28,13 +28,13 @@ const ToastContainer = () => {
 
     return (
         <View style={styles.container}>
-            {toasts.map((toast) => (
+            {toasts.map((toast, index) => (
                 <Toast
                     key={toast.id}
                     visible={true}
                     duration={toast.options.duration}
                     position={toast.options.position}
-                    style={toast.options.style}
+                    style={[toast.options.style, { top: 0 + index * 65 }]}
                     onHide={() => toastManagerInstance.remove(toast.id)}
                 >
                     {toast.content}

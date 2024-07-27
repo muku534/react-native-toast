@@ -1,11 +1,10 @@
-// src/components/ToastHelpers/CustomToast.js
 import React from 'react';
 import { View, Text, Image, StyleSheet } from 'react-native';
 
 const CustomToast = ({ content }) => {
     return (
         <View style={styles.customToast}>
-            <Text style={styles.text}>{content}</Text>
+            {content}
         </View>
     );
 };
@@ -17,10 +16,11 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
         flexDirection: 'row',
         alignItems: 'center',
-    },
-    text: {
-        color: '#FFFFFF',  // White text color
-        fontWeight: 'bold',
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.2,
+        shadowRadius: 3,
+        elevation: 5,
     },
 });
 

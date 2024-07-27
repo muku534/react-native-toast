@@ -50,7 +50,7 @@ const styles = StyleSheet.create({
         zIndex: 9999,  // Ensure the toast is above other elements
     },
     top: {
-        top: 50,
+        top: 0,
     },
     bottom: {
         bottom: 50,
@@ -58,7 +58,7 @@ const styles = StyleSheet.create({
     toast: {
         padding: 10,
         borderRadius: 5,
-        backgroundColor: 'rgba(0,0,0,0.7)',
+        // backgroundColor: 'rgba(0,0,0,0.7)',
     },
 });
 

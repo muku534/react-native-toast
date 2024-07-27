@@ -13,12 +13,12 @@ const useToast = () => {
         toastManagerInstance.show(content, options);
     };
 
-    const success = (message) => {
-        show(<SuccessToast message={message} />, { duration: 3000, position: 'bottom' });
+    const success = (message, options) => {
+        show(<SuccessToast message={message} />, options);
     };
 
-    const error = (message) => {
-        show(<ErrorToast message={message} />, { duration: 3000, position: 'bottom' });
+    const error = (message, options) => {
+        show(<ErrorToast message={message} />, options);
     };
 
     const promise = (promise, { loading, success, error }) => {
@@ -33,8 +33,8 @@ const useToast = () => {
         show(<CustomToast content={content} />, options);
     };
 
-    const emoji = (message, emoji) => {
-        show(<EmojiToast message={message} emoji={emoji} />, { duration: 3000, position: 'bottom' });
+    const emoji = (message, emoji, options) => {
+        show(<EmojiToast message={message} emoji={emoji} />, options);
     };
 
     return {
