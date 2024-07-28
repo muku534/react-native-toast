@@ -1,12 +1,19 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { Animated, StyleSheet, View, Text } from 'react-native';
+import {
+    heightPercentageToDP as hp,
+    widthPercentageToDP as wp,
+} from './Pixel/Index';
 
 const Toast = ({ visible, duration, position, children, onHide, style }) => {
     const [opacity] = useState(new Animated.Value(0));
 
+    const positionStyle = useMemo(() => {
+        return position === 'top' ? styles.top : styles.bottom;
+    }, [position]);
+
     useEffect(() => {
         if (visible) {
-            console.log('Toast visible:', children);
             Animated.timing(opacity, {
                 toValue: 1,
                 duration: 500,
@@ -16,7 +23,7 @@ const Toast = ({ visible, duration, position, children, onHide, style }) => {
             });
 
             if (duration !== Infinity) {
-                setTimeout(() => {
+                const hideTimeout = setTimeout(() => {
                     Animated.timing(opacity, {
                         toValue: 0,
                         duration: 500,
@@ -26,14 +33,22 @@ const Toast = ({ visible, duration, position, children, onHide, style }) => {
                         onHide();
                     });
                 }, duration);
+
+                return () => clearTimeout(hideTimeout); // Clean up timeout if component unmounts
             }
+        } else {
+            Animated.timing(opacity, {
+                toValue: 0,
+                duration: 500,
+                useNativeDriver: true,
+            }).start(onHide);
         }
-    }, [visible, duration, onHide, opacity, children]);
+    }, [visible, duration, onHide, opacity]);
 
     if (!visible) return null;
 
     return (
-        <Animated.View style={[styles.container, { opacity }, position === 'top' ? styles.top : styles.bottom, style]}>
+        <Animated.View style={[styles.container, { opacity }, positionStyle, style]}>
             <View style={styles.toast}>
                 {typeof children === 'string' ? <Text>{children}</Text> : children}
             </View>
@@ -47,7 +62,7 @@ const styles = StyleSheet.create({
         left: 0,
         right: 0,
         alignItems: 'center',
-        zIndex: 9999,  // Ensure the toast is above other elements
+        zIndex: 9999,
     },
     top: {
         top: 0,
@@ -56,10 +71,10 @@ const styles = StyleSheet.create({
         bottom: 50,
     },
     toast: {
-        padding: 10,
-        borderRadius: 5,
+        marginTop: hp(2)
+        // borderRadius: 5,
         // backgroundColor: 'rgba(0,0,0,0.7)',
     },
 });
 
-export default Toast;
+export default React.memo(Toast);

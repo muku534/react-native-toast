@@ -1,6 +1,6 @@
 import React from 'react';
 import { Text } from 'react-native';
-import toastManagerInstance from './components/ToastManager';
+import toastManagerInstance from './ToastManager';
 import LoadingToast from './components/ToastHelpers/LoadingToast';
 import SuccessToast from './components/ToastHelpers/SuccessToast';
 import ErrorToast from './components/ToastHelpers/ErrorToast';
