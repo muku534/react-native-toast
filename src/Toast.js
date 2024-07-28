@@ -7,6 +7,7 @@ import {
 
 const Toast = ({ visible, duration, position, children, onHide, style }) => {
     const [opacity] = useState(new Animated.Value(0));
+    const [translateY] = useState(new Animated.Value(-50)); // Initial value for fadeInDown effect
 
     const positionStyle = useMemo(() => {
         return position === 'top' ? styles.top : styles.bottom;
@@ -14,21 +15,35 @@ const Toast = ({ visible, duration, position, children, onHide, style }) => {
 
     useEffect(() => {
         if (visible) {
-            Animated.timing(opacity, {
-                toValue: 1,
-                duration: 500,
-                useNativeDriver: true,
-            }).start(() => {
+            Animated.parallel([
+                Animated.timing(opacity, {
+                    toValue: 1,
+                    duration: 500,
+                    useNativeDriver: true,
+                }),
+                Animated.timing(translateY, {
+                    toValue: 0, // Final position for fadeInDown effect
+                    duration: 500,
+                    useNativeDriver: true,
+                })
+            ]).start(() => {
                 console.log('Toast shown:', children);
             });
 
             if (duration !== Infinity) {
                 const hideTimeout = setTimeout(() => {
-                    Animated.timing(opacity, {
-                        toValue: 0,
-                        duration: 500,
-                        useNativeDriver: true,
-                    }).start(() => {
+                    Animated.parallel([
+                        Animated.timing(opacity, {
+                            toValue: 0,
+                            duration: 500,
+                            useNativeDriver: true,
+                        }),
+                        Animated.timing(translateY, {
+                            toValue: -50, // Initial position for fadeInDown effect
+                            duration: 500,
+                            useNativeDriver: true,
+                        })
+                    ]).start(() => {
                         console.log('Toast hidden:', children);
                         onHide();
                     });
@@ -37,21 +52,28 @@ const Toast = ({ visible, duration, position, children, onHide, style }) => {
                 return () => clearTimeout(hideTimeout); // Clean up timeout if component unmounts
             }
         } else {
-            Animated.timing(opacity, {
-                toValue: 0,
-                duration: 500,
-                useNativeDriver: true,
-            }).start(onHide);
+            Animated.parallel([
+                Animated.timing(opacity, {
+                    toValue: 0,
+                    duration: 500,
+                    useNativeDriver: true,
+                }),
+                Animated.timing(translateY, {
+                    toValue: -50,
+                    duration: 500,
+                    useNativeDriver: true,
+                })
+            ]).start(onHide);
         }
-    }, [visible, duration, onHide, opacity]);
+    }, [visible, duration, onHide, opacity, translateY]);
 
     if (!visible) return null;
 
     return (
-        <Animated.View style={[styles.container, { opacity }, positionStyle, style]}>
-            <View style={styles.toast}>
+        <Animated.View style={[styles.container, { opacity, transform: [{ translateY }] }, positionStyle, style]}>
+            <Animated.View style={[styles.toast, { opacity }]}>
                 {typeof children === 'string' ? <Text>{children}</Text> : children}
-            </View>
+            </Animated.View>
         </Animated.View>
     );
 };
@@ -71,9 +93,15 @@ const styles = StyleSheet.create({
         bottom: 50,
     },
     toast: {
-        marginTop: hp(2)
-        // borderRadius: 5,
-        // backgroundColor: 'rgba(0,0,0,0.7)',
+        marginTop: hp(2),
+        // padding: 10,
+        backgroundColor: 'white',
+        borderRadius: wp(2),
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.2,
+        shadowRadius: 3,
+        elevation: 5,
     },
 });
 
