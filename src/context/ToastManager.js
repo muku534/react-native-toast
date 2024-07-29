@@ -4,7 +4,7 @@ class ToastManager extends EventEmitter {
     show(content, options = {}) {
         const id = Date.now().toString();
         const defaultOptions = {
-            duration: 3000,
+            duration: 1000,
             position: 'bottom',
             style: {},
         };
@@ -17,14 +17,14 @@ class ToastManager extends EventEmitter {
 
     async promise(promise, { loading, success, error }) {
         const id = Date.now().toString();
-        this.show(loading, { duration: Infinity, position: 'bottom' });
+        this.show(loading, { duration: Infinity, position: 'top' });
         try {
             await promise;
             this.remove(id);
-            this.show(success, { duration: 3000, position: 'bottom' });
+            this.show(success, { duration: 1000, position: 'top' });
         } catch (err) {
             this.remove(id);
-            this.show(error, { duration: 3000, position: 'bottom' });
+            this.show(error, { duration: 1000, position: 'top' });
         }
     }
 }
