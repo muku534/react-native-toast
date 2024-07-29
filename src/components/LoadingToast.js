@@ -1,24 +1,32 @@
 // src/components/ToastHelpers/LoadingToast.js
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, ActivityIndicator } from 'react-native';
+import {
+    heightPercentageToDP as hp,
+    widthPercentageToDP as wp,
+} from '../utils/Pixel/Index';
 
 const LoadingToast = ({ message }) => {
     return (
-        <View style={[styles.toast, styles.loading]}>
-            <Text style={styles.text}>{message}</Text>
+        <View style={styles.toast}>
+            <ActivityIndicator size="large" color={'#a9a9a9'} />
+            {/** <Text style={styles.text}>{message}</Text>  */}
         </View>
     );
 }
 const styles = StyleSheet.create({
     toast: {
-        padding: 10,
-        borderRadius: 5,
-    },
-    loading: {
-        backgroundColor: 'orange',
+        padding: wp(1),
+        borderRadius: wp(10),
+        backgroundColor: 'white',
+        // flexDirection: 'row',
+        // alignItems: 'center',
+
     },
     text: {
-        color: 'white',
+        fontSize: hp(2.2),
+        color: 'black',
+        // paddingHorizontal: wp(1.5)
     },
 });
 

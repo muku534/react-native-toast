@@ -3,7 +3,8 @@ import { Animated, StyleSheet, View, Text } from 'react-native';
 import {
     heightPercentageToDP as hp,
     widthPercentageToDP as wp,
-} from './Pixel/Index';
+} from './utils/Pixel/Index';
+import { fadeInDown, fadeOutUp } from './animations/fadeInDown';
 
 const Toast = ({ visible, duration, position, children, onHide, style }) => {
     const [opacity] = useState(new Animated.Value(0));
@@ -15,35 +16,15 @@ const Toast = ({ visible, duration, position, children, onHide, style }) => {
 
     useEffect(() => {
         if (visible) {
-            Animated.parallel([
-                Animated.timing(opacity, {
-                    toValue: 1,
-                    duration: 500,
-                    useNativeDriver: true,
-                }),
-                Animated.timing(translateY, {
-                    toValue: 0, // Final position for fadeInDown effect
-                    duration: 500,
-                    useNativeDriver: true,
-                })
-            ]).start(() => {
+            const fadInAnimation = fadeInDown(opacity, translateY);
+            fadInAnimation.start(() => {
                 console.log('Toast shown:', children);
             });
 
             if (duration !== Infinity) {
                 const hideTimeout = setTimeout(() => {
-                    Animated.parallel([
-                        Animated.timing(opacity, {
-                            toValue: 0,
-                            duration: 500,
-                            useNativeDriver: true,
-                        }),
-                        Animated.timing(translateY, {
-                            toValue: -50, // Initial position for fadeInDown effect
-                            duration: 500,
-                            useNativeDriver: true,
-                        })
-                    ]).start(() => {
+                    const fadOutAnimation = fadeOutUp(opacity, translateY)
+                    fadOutAnimation.start(() => {
                         console.log('Toast hidden:', children);
                         onHide();
                     });
@@ -52,18 +33,8 @@ const Toast = ({ visible, duration, position, children, onHide, style }) => {
                 return () => clearTimeout(hideTimeout); // Clean up timeout if component unmounts
             }
         } else {
-            Animated.parallel([
-                Animated.timing(opacity, {
-                    toValue: 0,
-                    duration: 500,
-                    useNativeDriver: true,
-                }),
-                Animated.timing(translateY, {
-                    toValue: -50,
-                    duration: 500,
-                    useNativeDriver: true,
-                })
-            ]).start(onHide);
+            const fadInAnimation = fadeInDown(opacity, translateY);
+            fadInAnimation.start(onHide);
         }
     }, [visible, duration, onHide, opacity, translateY]);
 

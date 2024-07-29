@@ -1,6 +1,10 @@
 // src/components/ToastHelpers/EmojiToast.js
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
+import {
+    heightPercentageToDP as hp,
+    widthPercentageToDP as wp,
+} from '../utils/Pixel/Index';
 
 const EmojiToast = ({ message, emoji }) => {
     return (
@@ -11,14 +15,18 @@ const EmojiToast = ({ message, emoji }) => {
 }
 const styles = StyleSheet.create({
     emojiToast: {
-        padding: 10,
-        borderRadius: 5,
-        backgroundColor: 'purple',
+        // padding: wp(2),
+        height: hp(5),
+        borderRadius: wp(2),
+        backgroundColor: 'white',
         flexDirection: 'row',
         alignItems: 'center',
+
     },
     text: {
-        color: 'white',
+        fontSize: hp(2.2),
+        color: 'black',
+        paddingHorizontal: wp(1.5)
     },
 });
 

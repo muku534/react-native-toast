@@ -2,6 +2,10 @@
 import LottieView from 'lottie-react-native';
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
+import {
+    heightPercentageToDP as hp,
+    widthPercentageToDP as wp,
+} from '../utils/Pixel/Index';
 
 const ErrorToast = ({ message }) => {
     return (
@@ -20,20 +24,25 @@ const ErrorToast = ({ message }) => {
 
 const styles = StyleSheet.create({
     container: {
-        padding: 2,
-        paddingHorizontal: 5,
-        borderRadius: 5,
-        backgroundColor: 'white',  // Success color (green)
+        // height: hp(5),
+        // width: wp(52),
+        // padding: wp(1),
+        height: hp(5),
+        paddingHorizontal: wp(1),
+        borderRadius: wp(2),
+        backgroundColor: '#f8c4c4',  // Success color (green)
         alignItems: 'center',
         flexDirection: 'row'
+
     },
     text: {
-        color: 'black',  // White text color
-        fontWeight: 'bold',
+        fontSize: hp(2.1),
+        color: 'black',
+        paddingHorizontal: wp(1.5)
     },
     lottie: {
-        width: 32,
-        height: 32,
+        width: wp(8),
+        height: hp(4),
     },
 });
 
