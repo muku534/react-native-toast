@@ -1,11 +1,11 @@
 import React from 'react';
 import { Text } from 'react-native';
-import toastManagerInstance from './ToastManager';
-import LoadingToast from './components/ToastHelpers/LoadingToast';
-import SuccessToast from './components/ToastHelpers/SuccessToast';
-import ErrorToast from './components/ToastHelpers/ErrorToast';
-import CustomToast from './components/ToastHelpers/CustomeToast';
-import EmojiToast from './components/ToastHelpers/EmojiToast';
+import toastManagerInstance from '../context/ToastManager';
+import LoadingToast from '../components/LoadingToast';
+import SuccessToast from '../components/ToastHelpers/SuccessToast';
+import ErrorToast from '../components/ToastHelpers/ErrorToast';
+import CustomToast from '../components/CustomeToast';
+import EmojiToast from '../components/EmojiToast';
 
 
 const useToast = () => {

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { View, StyleSheet } from 'react-native';
-import Toast from './Toast';
+import Toast from '../Toast';
 import toastManagerInstance from './ToastManager';
 
 const ToastContainer = () => {
