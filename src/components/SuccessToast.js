@@ -10,7 +10,7 @@ const SuccessToast = ({ message }) => {
     return (
         <View style={styles.container}>
             <LottieView
-                source={require('../../../assets/AnimatedIcons/SuccessAnimation.json')}  // Replace with your success Lottie animation path
+                source={require('../../assets/animated_Icon/SuccessAnimation.json')}  // Replace with your success Lottie animation path
                 autoPlay
                 loop={false}
                 style={styles.lottie}

@@ -1,10 +1,11 @@
 import React, { useEffect, useState, useMemo } from 'react';
-import { Animated, StyleSheet, View, Text } from 'react-native';
+import { Animated, StyleSheet, Text } from 'react-native';
 import {
     heightPercentageToDP as hp,
     widthPercentageToDP as wp,
 } from './utils/Pixel/Index';
-import { fadeInDown, fadeOutUp } from './animations/fadeInDown';
+import { fadeInDown } from './animations/fadeInDown';
+import { fadeOutUp } from './animations/fadeOutUp';
 
 const Toast = ({ visible, duration, position, children, onHide, style }) => {
     const [opacity] = useState(new Animated.Value(0));

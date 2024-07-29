@@ -11,7 +11,7 @@ const ErrorToast = ({ message }) => {
     return (
         <View style={styles.container}>
             <LottieView
-                source={require('../../../assets/AnimatedIcons/ErrorAnimation.json')}  // Replace with your success Lottie animation path
+                source={require('../../assets/animated_Icon/ErrorAnimation.json')}  // Replace with your success Lottie animation path
                 autoPlay
                 loop={false}
                 speed={1.5}
@@ -24,9 +24,6 @@ const ErrorToast = ({ message }) => {
 
 const styles = StyleSheet.create({
     container: {
-        // height: hp(5),
-        // width: wp(52),
-        // padding: wp(1),
         height: hp(5),
         paddingHorizontal: wp(1),
         borderRadius: wp(2),
