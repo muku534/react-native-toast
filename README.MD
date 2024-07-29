@@ -5,6 +5,8 @@
 ## Demo
 
 Animated toast message component for React Native.
+[Demo](https://github.com/muku534/react-native-toast/blob/master/docs/Toast.gif)
+
 
 
 ## Features
