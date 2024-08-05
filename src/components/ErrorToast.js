@@ -24,10 +24,12 @@ const ErrorToast = ({ message }) => {
 
 const styles = StyleSheet.create({
     container: {
-        height: hp(5),
-        paddingHorizontal: wp(1),
-        borderRadius: wp(2),
-        backgroundColor: '#f8c4c4',  // Success color (green)
+        width: wp(72),
+        height: hp(5.5),
+        paddingHorizontal: wp(4),
+        borderRadius: wp(4),
+        // backgroundColor: '#f8c4c4',  // Success color (green)
+        backgroundColor: 'white',
         alignItems: 'center',
         flexDirection: 'row'
 
@@ -38,8 +40,8 @@ const styles = StyleSheet.create({
         paddingHorizontal: wp(1.5)
     },
     lottie: {
-        width: wp(8),
-        height: hp(4),
+        width: wp(8.5),
+        height: hp(4.5),
     },
 });
 

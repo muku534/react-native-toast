@@ -19,14 +19,10 @@ const styles = StyleSheet.create({
         padding: wp(1),
         borderRadius: wp(10),
         backgroundColor: 'white',
-        // flexDirection: 'row',
-        // alignItems: 'center',
-
     },
     text: {
         fontSize: hp(2.2),
         color: 'black',
-        // paddingHorizontal: wp(1.5)
     },
 });
 

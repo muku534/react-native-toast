@@ -15,7 +15,7 @@ const CustomToast = ({ content }) => {
 
 const styles = StyleSheet.create({
     customToast: {
-        padding: wp(2),
+        padding: wp(1),
         borderRadius: wp(2),
         backgroundColor: 'white',
         flexDirection: 'row',

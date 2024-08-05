@@ -14,7 +14,7 @@ const SuccessToast = ({ message }) => {
                 autoPlay
                 loop={false}
                 style={styles.lottie}
-                speed={1.5}
+                speed={1.2}
             />
             <Text style={styles.text}>{message}</Text>
         </View>
@@ -23,19 +23,18 @@ const SuccessToast = ({ message }) => {
 
 const styles = StyleSheet.create({
     container: {
-        // height: hp(5),
-        // width: wp(57),
-        // padding: wp(0.2),
-        height: hp(5),
-        paddingHorizontal: wp(1),
-        borderRadius: wp(2),
+        width: wp(72),
+        height: hp(5.5),
+        paddingHorizontal: wp(4),
+        borderRadius: wp(4),
         backgroundColor: '#d2f7d2',  // Success color (green)
+        // backgroundColor: 'white',  // Success color (green)
         alignItems: 'center',
         flexDirection: 'row',
 
     },
     text: {
-        fontSize: hp(2.1),
+        fontSize: hp(2.2),
         color: 'black',
         paddingHorizontal: wp(1.5)
     },

@@ -15,9 +15,10 @@ const EmojiToast = ({ message, emoji }) => {
 }
 const styles = StyleSheet.create({
     emojiToast: {
-        // padding: wp(2),
-        height: hp(5),
-        borderRadius: wp(2),
+        width: wp(72),
+        height: hp(5.5),
+        paddingHorizontal: wp(4),
+        borderRadius: wp(4),
         backgroundColor: 'white',
         flexDirection: 'row',
         alignItems: 'center',
