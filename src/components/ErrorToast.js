@@ -1,4 +1,3 @@
-// src/components/ToastHelpers/ErrorToast.js
 import LottieView from 'lottie-react-native';
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';

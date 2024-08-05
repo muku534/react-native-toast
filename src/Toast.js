@@ -1,12 +1,10 @@
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { PanResponder, StyleSheet, Text } from 'react-native';
 import {
     heightPercentageToDP as hp,
     widthPercentageToDP as wp,
 } from './utils/Pixel/Index';
-import { fadeInDown, } from './animations/fadeInDown';
-import { fadeOutUp } from './animations/fadeOutUp';
-import Animated, { useSharedValue, useAnimatedStyle, withTiming, withSpring, Easing, runOnJS } from 'react-native-reanimated';
+import Animated, { useSharedValue, useAnimatedStyle, withTiming, withSpring, runOnJS } from 'react-native-reanimated';
 
 const Toast = ({ visible, duration, position, children, onHide, style }) => {
     const opacity = useSharedValue(0);

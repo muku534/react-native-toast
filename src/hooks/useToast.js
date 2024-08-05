@@ -1,5 +1,4 @@
 import React from 'react';
-import { Text } from 'react-native';
 import toastManagerInstance from '../context/ToastManager';
 import LoadingToast from '../components/LoadingToast';
 import SuccessToast from '../components/SuccessToast';

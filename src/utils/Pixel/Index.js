@@ -1,8 +1,3 @@
-/* eslint-disable prettier/prettier */
-/* eslint-disable no-unused-vars */
-/* eslint-disable react-native/no-inline-styles */
-/* eslint-disable prettier/prettier */
-
 import {Dimensions, PixelRatio} from 'react-native';
 let {width, height} = Dimensions.get('window');
 const widthPercentageToDP = widthPercent => {

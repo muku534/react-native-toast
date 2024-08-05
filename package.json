@@ -1,14 +1,19 @@
 {
   "name": "react-native-toast",
   "version": "1.0.0",
-  "description": "",
+  "description": "A simple toast notification library for React Native",
   "main": "index.js",
   "scripts": {
     "test": "jest"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "keywords": [
+    "react-native",
+    "toast",
+    "notification",
+    "library"
+  ],
+  "author": "Mukesh Prajapati",
+  "license": "MIT",
   "dependencies": {
     "@testing-library/jest-native": "^5.4.3",
     "@testing-library/react-native": "^12.5.2",
