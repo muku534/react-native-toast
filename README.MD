@@ -34,8 +34,8 @@ To integrate the toast notifications into your application, follow these steps:
 Start by importing the necessary components and hooks from the library:
 
 ```javascript
-import useToast from 'react-native-toast-library-name';
-import ToastContainer from 'react-native-toast-library-name';
+import useToast from 'rn-toastify';
+import ToastContainer from 'rn-toastify';
 
 const AppContent = () => {
   // Toast functions here
@@ -58,7 +58,7 @@ The useToast hook provides access to different types of toasts. Below are exampl
 
 - Success Toast
 ```javascript
-import useToast from 'react-native-toast-library-name';
+import useToast from 'rn-toastify';
 
 const { success } = useToast();
 
@@ -70,7 +70,7 @@ const handleSuccessToast = () => {
 ```
 - Error Toast
 ```javascript
-import useToast from 'react-native-toast-library-name';
+import useToast from 'rn-toastify';
 
 const { error } = useToast();
 
@@ -83,7 +83,7 @@ const handleErrorToast = () => {
 
 - Promise Toast
 ```javascript
-import useToast from 'react-native-toast-library-name';
+import useToast from 'rn-toastify';
 
 const { promise } = useToast();
 
@@ -156,7 +156,7 @@ const styles = StyleSheet.create({
 
 - Emoji Toast
 ```javascript
-import useToast from 'react-native-toast-library-name';
+import useToast from 'rn-toastify';
 
 const { emoji } = useToast();
 
