@@ -19,8 +19,8 @@ const Toast = ({ visible, duration, position, children, onHide, style }) => {
     useEffect(() => {
         if (visible) {
             opacity.value = withTiming(1, { duration: 300 });
-            translateY.value = withSpring(0, { damping: 8, stiffness: 110 });
-            scale.value = withSpring(1, { damping: 8, stiffness: 110 });
+            translateY.value = withSpring(0, { damping: 10, stiffness: 120 });
+            scale.value = withSpring(1, { damping: 10, stiffness: 120 });
 
             if (duration !== Infinity) {
                 const hideTimeout = setTimeout(() => {
@@ -74,7 +74,7 @@ const Toast = ({ visible, duration, position, children, onHide, style }) => {
 
     return (
         <Animated.View
-            {...panResponder.panHandlers}
+            // {...panResponder.panHandlers}
             style={[
                 styles.container,
                 animatedStyle,
