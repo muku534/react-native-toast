@@ -3,7 +3,6 @@ import { View, StyleSheet } from 'react-native';
 import Toast from '../Toast';
 import toastManagerInstance from './ToastManager';
 
-
 const ToastContainer = () => {
     const [toasts, setToasts] = useState([]);
 
@@ -25,35 +24,93 @@ const ToastContainer = () => {
         };
     }, []);
 
+    // Separate toasts by position
+    const topToasts = toasts.filter(toast => toast.options.position === 'top');
+    const centerToasts = toasts.filter(toast => toast.options.position === 'center');
+    const bottomToasts = toasts.filter(toast => toast.options.position === 'bottom');
+
     return (
-        <View style={styles.container}>
-            {toasts.map((toast, index) => (
-                <Toast
-                    key={toast.id}
-                    visible={true}
-                    duration={toast.options.duration}
-                    position={toast.options.position}
-                    style={[toast.options.style, { top: 0 + index * 60 }]}
-                    onHide={() => toastManagerInstance.remove(toast.id)}
-                >
-                    {toast.content}
-                </Toast>
-            ))}
-        </View>
+        <>
+            {/* Top positioned toasts */}
+            <View style={styles.topContainer}>
+                {topToasts.map((toast, index) => (
+                    <Toast
+                        key={toast.id}
+                        visible={true}
+                        duration={toast.options.duration}
+                        position="top"
+                        style={[toast.options.style, { top: 20 + index * 60 }]} // Adjust spacing between top toasts
+                        onHide={() => toastManagerInstance.remove(toast.id)}
+                    >
+                        {toast.content}
+                    </Toast>
+                ))}
+            </View>
+
+            {/* Center positioned toasts */}
+            <View style={styles.centerContainer}>
+                {centerToasts.map((toast, index) => (
+                    <Toast
+                        key={toast.id}
+                        visible={true}
+                        duration={toast.options.duration}
+                        position="center"
+                        style={[toast.options.style, { marginTop: index * 60 }]} // Adjust spacing between center toasts
+                        onHide={() => toastManagerInstance.remove(toast.id)}
+                    >
+                        {toast.content}
+                    </Toast>
+                ))}
+            </View>
+
+            {/* Bottom positioned toasts */}
+            <View style={styles.bottomContainer}>
+                {bottomToasts.map((toast, index) => (
+                    <Toast
+                        key={toast.id}
+                        visible={true}
+                        duration={toast.options.duration}
+                        position="bottom"
+                        style={[toast.options.style, { bottom: 20 + index * 60 }]} // Adjust spacing between bottom toasts
+                        onHide={() => toastManagerInstance.remove(toast.id)}
+                    >
+                        {toast.content}
+                    </Toast>
+                ))}
+            </View>
+        </>
     );
 };
 
 const styles = StyleSheet.create({
-    container: {
+    topContainer: {
         position: 'absolute',
         top: 0,
         left: 0,
         right: 0,
-        bottom: 0,
-        justifyContent: 'center',
-        alignItems: 'center',
         zIndex: 9999,
         pointerEvents: 'box-none',
+        alignItems: 'center',
+    },
+    centerContainer: {
+        position: 'absolute',
+        top: '50%',
+        bottom: '50%',
+        left: 0,
+        right: 0,
+        zIndex: 9999,
+        pointerEvents: 'box-none',
+        alignItems: 'center',
+        transform: [{ translateY: -30 }] // Center the first toast vertically
+    },
+    bottomContainer: {
+        position: 'absolute',
+        bottom: 0,
+        left: 0,
+        right: 0,
+        zIndex: 9999,
+        pointerEvents: 'box-none',
+        alignItems: 'center',
     },
 });
 

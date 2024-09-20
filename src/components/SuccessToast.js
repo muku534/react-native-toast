@@ -23,18 +23,17 @@ const SuccessToast = ({ message }) => {
 
 const styles = StyleSheet.create({
     container: {
-        width: wp(72),
-        height: hp(5.5),
+        width: wp(74),
+        height: hp(6),
         paddingHorizontal: wp(4),
-        borderRadius: wp(4),
-        backgroundColor: '#d2f7d2',  // Success color (green)
-        // backgroundColor: 'white',  // Success color (green)
+        borderRadius: wp(3),
+        backgroundColor: '#d2f7d2',
         alignItems: 'center',
         flexDirection: 'row',
 
     },
     text: {
-        fontSize: hp(2.2),
+        fontSize: hp(2.3),
         color: 'black',
         paddingHorizontal: wp(1.5)
     },

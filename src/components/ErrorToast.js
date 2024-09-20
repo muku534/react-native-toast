@@ -1,3 +1,4 @@
+// src/components/ToastHelpers/ErrorToast.js
 import LottieView from 'lottie-react-native';
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
@@ -23,18 +24,17 @@ const ErrorToast = ({ message }) => {
 
 const styles = StyleSheet.create({
     container: {
-        width: wp(72),
-        height: hp(5.5),
+        width: wp(74),
+        height: hp(6),
         paddingHorizontal: wp(4),
-        borderRadius: wp(4),
-        // backgroundColor: '#f8c4c4',  // Success color (green)
-        backgroundColor: 'white',
+        borderRadius: wp(3),
+        backgroundColor: '#f8c4c4',
         alignItems: 'center',
         flexDirection: 'row'
 
     },
     text: {
-        fontSize: hp(2.1),
+        fontSize: hp(2.3),
         color: 'black',
         paddingHorizontal: wp(1.5)
     },

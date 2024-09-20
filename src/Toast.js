@@ -1,14 +1,14 @@
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { PanResponder, StyleSheet, Text } from 'react-native';
 import {
     heightPercentageToDP as hp,
     widthPercentageToDP as wp,
 } from './utils/Pixel/Index';
-import Animated, { useSharedValue, useAnimatedStyle, withTiming, withSpring, runOnJS } from 'react-native-reanimated';
+import Animated, { useSharedValue, useAnimatedStyle, withTiming, withSpring, Easing, runOnJS } from 'react-native-reanimated';
 
 const Toast = ({ visible, duration, position, children, onHide, style }) => {
     const opacity = useSharedValue(0);
-    const translateY = useSharedValue(-50);
+    const translateY = useSharedValue(position === 'top' ? -50 : 50);
     const translateX = useSharedValue(0);
     const scale = useSharedValue(0.9); // Start with a slightly smaller scale
 
@@ -25,7 +25,7 @@ const Toast = ({ visible, duration, position, children, onHide, style }) => {
             if (duration !== Infinity) {
                 const hideTimeout = setTimeout(() => {
                     opacity.value = withTiming(0, { duration: 300 });
-                    translateY.value = withTiming(-50, { duration: 300 });
+                    translateY.value = withTiming(position === 'top' ? -50 : 50, { duration: 300 });
                     runOnJS(onHide)();
                 }, duration);
 
@@ -33,7 +33,7 @@ const Toast = ({ visible, duration, position, children, onHide, style }) => {
             }
         } else {
             opacity.value = withTiming(0, { duration: 300 });
-            translateY.value = withTiming(-50, { duration: 300 });
+            translateY.value = withTiming(position === 'top' ? -50 : 50, { duration: 300 });
             runOnJS(onHide)();
         }
     }, [visible, duration, onHide]);
@@ -74,7 +74,6 @@ const Toast = ({ visible, duration, position, children, onHide, style }) => {
 
     return (
         <Animated.View
-            // {...panResponder.panHandlers}
             style={[
                 styles.container,
                 animatedStyle,
@@ -105,14 +104,12 @@ const styles = StyleSheet.create({
     },
     toast: {
         marginTop: hp(1),
-        // padding: 10,
-        backgroundColor: 'white',
-        borderRadius: wp(4),
+        borderRadius: wp(3),
         shadowColor: '#000',
-        shadowOffset: { width: 0, height: 1 }, // Adjust to spread the shadow more
-        shadowOpacity: 0.5, // Adjust for the desired darkness
-        shadowRadius: 10, // Increase for a more spread-out shadow
-        elevation: 20, // Higher elevation for Android shadow
+        shadowOffset: { width: 0, height: 1 },
+        shadowOpacity: 0.5,
+        shadowRadius: 10,
+        elevation: 20,
     },
 });
 
