@@ -2,6 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { View, StyleSheet } from 'react-native';
 import Toast from '../Toast';
 import toastManagerInstance from './ToastManager';
+import {
+    heightPercentageToDP as hp,
+    widthPercentageToDP as wp,
+} from '../utils/Pixel/Index';
 
 const ToastContainer = () => {
     const [toasts, setToasts] = useState([]);
@@ -39,7 +43,7 @@ const ToastContainer = () => {
                         visible={true}
                         duration={toast.options.duration}
                         position="top"
-                        style={[toast.options.style, { top: 20 + index * 60 }]} // Adjust spacing between top toasts
+                        style={[toast.options.style, { top: hp(0.1) + index * 60 }]} // Adjust spacing between top toasts
                         onHide={() => toastManagerInstance.remove(toast.id)}
                     >
                         {toast.content}
@@ -71,7 +75,7 @@ const ToastContainer = () => {
                         visible={true}
                         duration={toast.options.duration}
                         position="bottom"
-                        style={[toast.options.style, { bottom: 20 + index * 60 }]} // Adjust spacing between bottom toasts
+                        style={[toast.options.style, { bottom: hp(2) + index * 60 }]} // Adjust spacing between bottom toasts
                         onHide={() => toastManagerInstance.remove(toast.id)}
                     >
                         {toast.content}

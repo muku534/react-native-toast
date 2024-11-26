@@ -24,19 +24,20 @@ const ErrorToast = ({ message }) => {
 
 const styles = StyleSheet.create({
     container: {
-        width: wp(74),
-        height: hp(6),
+        width: wp(87),
+        height: hp(6.8),
         paddingHorizontal: wp(4),
-        borderRadius: wp(3),
-        backgroundColor: '#f8c4c4',
+        borderRadius: wp(4),
+        // backgroundColor: '#f8c4c4',
+        backgroundColor: '#F7F7FC',
         alignItems: 'center',
         flexDirection: 'row'
-
     },
     text: {
         fontSize: hp(2.3),
         color: 'black',
-        paddingHorizontal: wp(1.5)
+        fontWeight: '500',
+        paddingHorizontal: wp(3)
     },
     lottie: {
         width: wp(8.5),

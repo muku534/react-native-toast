@@ -14,13 +14,14 @@ const EmojiToast = ({ message, emoji }) => {
 }
 const styles = StyleSheet.create({
     emojiToast: {
-        width: wp(72),
-        height: hp(5.5),
+        width: wp(87),
+        height: hp(6.8),
         paddingHorizontal: wp(4),
         borderRadius: wp(4),
-        backgroundColor: 'white',
-        flexDirection: 'row',
+        // backgroundColor: '#d2f7d2',
+        backgroundColor: '#F7F7FC',
         alignItems: 'center',
+        flexDirection: 'row',
 
     },
     text: {

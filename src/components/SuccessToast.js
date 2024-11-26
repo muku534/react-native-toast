@@ -23,19 +23,20 @@ const SuccessToast = ({ message }) => {
 
 const styles = StyleSheet.create({
     container: {
-        width: wp(74),
-        height: hp(6),
+        width: wp(87),
+        height: hp(6.8),
         paddingHorizontal: wp(4),
-        borderRadius: wp(3),
-        backgroundColor: '#d2f7d2',
+        borderRadius: wp(4),
+        // backgroundColor: '#d2f7d2',
+        backgroundColor: '#F7F7FC',
         alignItems: 'center',
         flexDirection: 'row',
-
     },
     text: {
         fontSize: hp(2.3),
         color: 'black',
-        paddingHorizontal: wp(1.5)
+        fontWeight: '500',
+        paddingHorizontal: wp(3)
     },
     lottie: {
         width: wp(8),
