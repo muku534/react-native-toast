@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo } from 'react';
-import { PanResponder, StyleSheet } from 'react-native';
+import { Easing, PanResponder, StyleSheet } from 'react-native';
 import Animated, {
     useSharedValue,
     useAnimatedStyle,
