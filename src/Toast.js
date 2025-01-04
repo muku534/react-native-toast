@@ -1,11 +1,12 @@
 import React, { useEffect, useMemo } from 'react';
-import { Easing, PanResponder, StyleSheet } from 'react-native';
+import { PanResponder, StyleSheet } from 'react-native';
 import Animated, {
     useSharedValue,
     useAnimatedStyle,
     withTiming,
     withSpring,
     runOnJS,
+    Easing,
 } from 'react-native-reanimated';
 
 const Toast = ({ visible, duration, position, children, onHide, style }) => {
