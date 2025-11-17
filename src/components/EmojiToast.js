@@ -5,10 +5,14 @@ import {
     widthPercentageToDP as wp,
 } from '../utils/Pixel/Index';
 
-const EmojiToast = ({ message, emoji }) => {
+const EmojiToast = ({ message, emoji, theme = 'light' }) => {
+    const isDark = theme === 'dark';
+    const bg = isDark ? '#111827' : '#F7F7FC';
+    const textColor = isDark ? '#F3F4F6' : 'black';
+
     return (
-        <View style={styles.emojiToast}>
-            <Text style={styles.text}>{emoji} {message}</Text>
+        <View style={[styles.emojiToast, { backgroundColor: bg }]}>
+            <Text style={[styles.text, { color: textColor }]}>{emoji} {message}</Text>
         </View>
     );
 }

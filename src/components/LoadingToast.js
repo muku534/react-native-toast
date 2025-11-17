@@ -6,10 +6,14 @@ import {
     widthPercentageToDP as wp,
 } from '../utils/Pixel/Index';
 
-const LoadingToast = ({ message }) => {
+const LoadingToast = ({ message, theme = 'light' }) => {
+    const isDark = theme === 'dark';
+    const bg = isDark ? '#111827' : '#FFFFFF';
+    const indicatorColor = isDark ? '#9CA3AF' : '#6B7280';
+
     return (
-        <View style={styles.toast}>
-            <ActivityIndicator size="large" color={'#a9a9a9'} />
+        <View style={[styles.toast, { backgroundColor: bg }]}>
+            <ActivityIndicator size="small" color={indicatorColor} />
             {/** <Text style={styles.text}>{message}</Text>  */}
         </View>
     );

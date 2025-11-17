@@ -9,7 +9,7 @@ import Animated, {
     Easing,
 } from 'react-native-reanimated';
 
-const Toast = ({ visible, duration, position, children, onHide, style }) => {
+const Toast = ({ visible, duration, position, children, onHide, style, theme }) => {
     const opacity = useSharedValue(0);
     const translateY = useSharedValue(position === 'top' ? -50 : 50);
     const translateX = useSharedValue(0);
@@ -77,12 +77,20 @@ const Toast = ({ visible, duration, position, children, onHide, style }) => {
 
     if (!visible) return null;
 
+    // If children is a React element, inject theme prop; otherwise render as-is.
+    const renderContent = () => {
+        if (React.isValidElement(children)) {
+            return React.cloneElement(children, { theme });
+        }
+        return children;
+    };
+
     return (
         <Animated.View
             {...panResponder.panHandlers}
             style={[styles.container, animatedStyle, positionStyle, style]}
         >
-            {children}
+            {renderContent()}
         </Animated.View>
     );
 };

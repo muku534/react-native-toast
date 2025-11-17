@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, Appearance } from 'react-native';
 import Toast from '../Toast';
 import toastManagerInstance from './ToastManager';
 import {
@@ -7,8 +7,9 @@ import {
     widthPercentageToDP as wp,
 } from '../utils/Pixel/Index';
 
-const ToastContainer = () => {
+const ToastContainer = ({ theme: forcedTheme } = {}) => {
     const [toasts, setToasts] = useState([]);
+    const [theme, setTheme] = useState(forcedTheme ?? (Appearance.getColorScheme() || 'light'));
 
     useEffect(() => {
         const handleShow = (toast) => {
@@ -22,28 +23,37 @@ const ToastContainer = () => {
         toastManagerInstance.on('show', handleShow);
         toastManagerInstance.on('remove', handleRemove);
 
+        let appearanceSub;
+        if (!forcedTheme && Appearance && Appearance.addChangeListener) {
+            appearanceSub = Appearance.addChangeListener(({ colorScheme }) => {
+                setTheme(colorScheme ?? 'light');
+            });
+        }
+
         return () => {
             toastManagerInstance.off('show', handleShow);
             toastManagerInstance.off('remove', handleRemove);
+            if (appearanceSub && appearanceSub.remove) appearanceSub.remove();
         };
     }, []);
 
     // Separate toasts by position
-    const topToasts = toasts.filter(toast => toast.options.position === 'top');
-    const centerToasts = toasts.filter(toast => toast.options.position === 'center');
-    const bottomToasts = toasts.filter(toast => toast.options.position === 'bottom');
+    const topToasts = toasts.filter(toast => toast?.options?.position === 'top');
+    const centerToasts = toasts.filter(toast => toast?.options?.position === 'center');
+    const bottomToasts = toasts.filter(toast => toast?.options?.position === 'bottom');
 
     return (
         <>
             {/* Top positioned toasts */}
-            <View style={styles.topContainer}>
+            <View style={styles.topContainer} pointerEvents="box-none">
                 {topToasts.map((toast, index) => (
                     <Toast
                         key={toast.id}
                         visible={true}
-                        duration={toast.options.duration}
+                        duration={toast?.options?.duration}
                         position="top"
-                        style={[toast.options.style, { top: hp(0.1) + index * 60 }]} // Adjust spacing between top toasts
+                        theme={theme}
+                        style={[toast?.options?.style || {}, { top: hp(0.1) + index * 60 }]} // Adjust spacing between top toasts
                         onHide={() => toastManagerInstance.remove(toast.id)}
                     >
                         {toast.content}
@@ -52,14 +62,15 @@ const ToastContainer = () => {
             </View>
 
             {/* Center positioned toasts */}
-            <View style={styles.centerContainer}>
+            <View style={styles.centerContainer} pointerEvents="box-none">
                 {centerToasts.map((toast, index) => (
                     <Toast
                         key={toast.id}
                         visible={true}
-                        duration={toast.options.duration}
+                        duration={toast?.options?.duration}
                         position="center"
-                        style={[toast.options.style, { marginTop: index * 60 }]} // Adjust spacing between center toasts
+                        theme={theme}
+                        style={[toast?.options?.style || {}, { marginTop: index * 60 }]} // Adjust spacing between center toasts
                         onHide={() => toastManagerInstance.remove(toast.id)}
                     >
                         {toast.content}
@@ -68,14 +79,15 @@ const ToastContainer = () => {
             </View>
 
             {/* Bottom positioned toasts */}
-            <View style={styles.bottomContainer}>
+            <View style={styles.bottomContainer} pointerEvents="box-none">
                 {bottomToasts.map((toast, index) => (
                     <Toast
                         key={toast.id}
                         visible={true}
-                        duration={toast.options.duration}
+                        duration={toast?.options?.duration}
                         position="bottom"
-                        style={[toast.options.style, { bottom: hp(2) + index * 60 }]} // Adjust spacing between bottom toasts
+                        theme={theme}
+                        style={[toast?.options?.style || {}, { bottom: hp(2) + index * 60 }]} // Adjust spacing between bottom toasts
                         onHide={() => toastManagerInstance.remove(toast.id)}
                     >
                         {toast.content}

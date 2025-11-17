@@ -7,9 +7,13 @@ import {
     widthPercentageToDP as wp,
 } from '../utils/Pixel/Index';
 
-const ErrorToast = ({ message }) => {
+const ErrorToast = ({ message, theme = 'light' }) => {
+    const isDark = theme === 'dark';
+    const containerBg = isDark ? '#111827' : '#F7F7FC';
+    const textColor = isDark ? '#FEE2E2' : '#991B1B';
+
     return (
-        <View style={styles.container}>
+        <View style={[styles.container, { backgroundColor: containerBg }]}>
             <LottieView
                 source={require('../../assets/animated_Icon/ErrorAnimation.json')}  // Replace with your success Lottie animation path
                 autoPlay
@@ -17,7 +21,7 @@ const ErrorToast = ({ message }) => {
                 speed={1.5}
                 style={styles.lottie}
             />
-            <Text style={styles.text}>{message}</Text>
+            <Text style={[styles.text, { color: textColor }]}>{message}</Text>
         </View>
     );
 }

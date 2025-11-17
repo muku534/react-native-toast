@@ -5,9 +5,11 @@ import {
     widthPercentageToDP as wp,
 } from '../utils/Pixel/Index';
 
-const CustomToast = ({ content }) => {
+const CustomToast = ({ content, theme = 'light' }) => {
+    const isDark = theme === 'dark';
+    const bg = isDark ? '#111827' : '#FFFFFF';
     return (
-        <View style={styles.customToast}>
+        <View style={[styles.customToast, { backgroundColor: bg }]}>
             {content}
         </View>
     );
