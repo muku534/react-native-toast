@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, StyleSheet, Appearance } from 'react-native';
+import { View, StyleSheet, Appearance, StatusBar, Platform, SafeAreaView } from 'react-native';
 import Toast from '../Toast';
 import toastManagerInstance from './ToastManager';
 import {
@@ -45,7 +45,15 @@ const ToastContainer = ({ theme: forcedTheme } = {}) => {
     return (
         <>
             {/* Top positioned toasts */}
-            <View style={styles.topContainer} pointerEvents="box-none">
+            <SafeAreaView
+                style={[
+                    styles.topContainer,
+                    {
+                        top: Platform.OS === 'android' ? StatusBar.currentHeight || 0 : 0,
+                    },
+                ]}
+                pointerEvents="box-none"
+            >
                 {topToasts.map((toast, index) => (
                     <Toast
                         key={toast.id}
@@ -53,13 +61,13 @@ const ToastContainer = ({ theme: forcedTheme } = {}) => {
                         duration={toast?.options?.duration}
                         position="top"
                         theme={theme}
-                        style={[toast?.options?.style || {}, { top: hp(0.1) + index * 60 }]} // Adjust spacing between top toasts
+                        style={[toast?.options?.style || {}, { marginTop: index * 60 }]} // Adjust spacing between top toasts
                         onHide={() => toastManagerInstance.remove(toast.id)}
                     >
                         {toast.content}
                     </Toast>
                 ))}
-            </View>
+            </SafeAreaView>
 
             {/* Center positioned toasts */}
             <View style={styles.centerContainer} pointerEvents="box-none">

@@ -1,6 +1,6 @@
 {
   "name": "rn-toastify",
-  "version": "1.0.9",
+  "version": "1.0.10",
   "description": "A customizable and performant toast notification library for React Native, featuring smooth animations, swipe gestures, and flexible styling options.",
   "main": "index.js",
   "repository": {
