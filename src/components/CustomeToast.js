@@ -8,6 +8,7 @@ import {
 const CustomToast = ({ content, theme = 'light' }) => {
     const isDark = theme === 'dark';
     const bg = isDark ? '#111827' : '#FFFFFF';
+    
     return (
         <View style={[styles.customToast, { backgroundColor: bg }]}>
             {content}
@@ -17,11 +18,23 @@ const CustomToast = ({ content, theme = 'light' }) => {
 
 const styles = StyleSheet.create({
     customToast: {
-        padding: wp(1),
-        borderRadius: wp(2),
-        backgroundColor: 'white',
+        minHeight: hp(6.5),
+        paddingHorizontal: wp(4),
+        paddingVertical: hp(1.2),
+        borderRadius: wp(3),
+        backgroundColor: '#FFFFFF',
         flexDirection: 'row',
         alignItems: 'center',
+        // Shadow for iOS
+        shadowColor: '#000',
+        shadowOffset: {
+            width: 0,
+            height: 4,
+        },
+        shadowOpacity: 0.15,
+        shadowRadius: 8,
+        // Shadow for Android
+        elevation: 6,
     },
 });
 

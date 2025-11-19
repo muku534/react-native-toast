@@ -8,19 +8,21 @@ import {
 
 const SuccessToast = ({ message, theme = 'light' }) => {
     const isDark = theme === 'dark';
-    const containerBg = isDark ? '#111827' : '#F7F7FC';
-    const textColor = isDark ? '#F3F4F6' : '#064E3B';
+    const containerBg = isDark ? '#111827' : '#FFFFFF';
+    const textColor = isDark ? '#F3F4F6' : '#1F2937';
 
     return (
         <View style={[styles.container, { backgroundColor: containerBg }]}>
             <LottieView
-                source={require('../../assets/animated_Icon/SuccessAnimation.json')}  // Replace with your success Lottie animation path
+                source={require('../../assets/animated_Icon/SuccessAnimation.json')}
                 autoPlay
                 loop={false}
                 style={styles.lottie}
                 speed={1.2}
             />
-            <Text style={[styles.text, { color: textColor }]}>{message}</Text>
+            <Text style={[styles.text, { color: textColor }]} numberOfLines={2}>
+                {message}
+            </Text>
         </View>
     );
 };
@@ -28,23 +30,35 @@ const SuccessToast = ({ message, theme = 'light' }) => {
 const styles = StyleSheet.create({
     container: {
         width: wp(87),
-        height: hp(6.8),
+        minHeight: hp(6.5),
         paddingHorizontal: wp(4),
-        borderRadius: wp(4),
-            // backgroundColor: '#d2f7d2',
-            backgroundColor: '#F7F7FC',
+        paddingVertical: hp(1.2),
+        borderRadius: wp(3),
+        backgroundColor: '#FFFFFF',
         alignItems: 'center',
         flexDirection: 'row',
+        // Shadow for iOS
+        shadowColor: '#000',
+        shadowOffset: {
+            width: 0,
+            height: 4,
+        },
+        shadowOpacity: 0.15,
+        shadowRadius: 8,
+        // Shadow for Android
+        elevation: 6,
     },
     text: {
-        fontSize: hp(2.3),
-        color: 'black',
+        fontSize: hp(1.85),
+        color: '#1F2937',
         fontWeight: '500',
-        paddingHorizontal: wp(3)
+        paddingHorizontal: wp(2.5),
+        flex: 1,
+        lineHeight: hp(2.4),
     },
     lottie: {
-        width: wp(8),
-        height: hp(4),
+        width: wp(7),
+        height: hp(3.5),
     },
 });
 
