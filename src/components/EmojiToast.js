@@ -1,57 +1,142 @@
-import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import React, { useEffect } from 'react';
+import { View, Text, StyleSheet, Platform } from 'react-native';
+import Animated, {
+    useSharedValue,
+    useAnimatedStyle,
+    withSpring,
+} from 'react-native-reanimated';
 import {
-    heightPercentageToDP as hp,
     widthPercentageToDP as wp,
 } from '../utils/Pixel/Index';
+import { TOAST_THEME } from '../utils/theme';
+import ProgressBar from './ProgressBar';
 
-const EmojiToast = ({ message, emoji, theme = 'light' }) => {
+/**
+ * EmojiToast — Toast with an emoji and bounce animation.
+ * Styled to match the premium design system.
+ */
+const EmojiToast = ({ title, message, emoji, theme = 'light', duration }) => {
     const isDark = theme === 'dark';
-    const bg = isDark ? '#111827' : '#FFFFFF';
-    const textColor = isDark ? '#F3F4F6' : '#1F2937';
+    const themeColors = TOAST_THEME[isDark ? 'dark' : 'light'];
+    const emojiScale = useSharedValue(0.3);
+
+    useEffect(() => {
+        emojiScale.value = withSpring(1, { damping: 8, stiffness: 200 });
+    }, []);
+
+    const emojiAnimStyle = useAnimatedStyle(() => ({
+        transform: [{ scale: emojiScale.value }],
+    }));
 
     return (
-        <View style={[styles.emojiToast, { backgroundColor: bg }]}>
-            <Text style={styles.emoji}>{emoji}</Text>
-            <Text style={[styles.text, { color: textColor }]} numberOfLines={2}>
-                {message}
-            </Text>
+        <View
+            style={[
+                styles.container,
+                {
+                    backgroundColor: themeColors.background,
+                    borderColor: themeColors.border,
+                    ...Platform.select({
+                        ios: {
+                            shadowColor: themeColors.shadow,
+                            shadowOffset: { width: 0, height: 4 },
+                            shadowOpacity: isDark ? 0.4 : 0.08,
+                            shadowRadius: 12,
+                        },
+                        android: {
+                            elevation: 6,
+                        },
+                    }),
+                },
+            ]}
+            accessibilityRole="alert"
+            accessibilityLiveRegion="polite"
+            accessibilityLabel={[emoji, title, message].filter(Boolean).join('. ')}
+        >
+            <View style={styles.body}>
+                <Animated.View style={[styles.emojiBadge, emojiAnimStyle]}>
+                    <Text style={styles.emojiText}>{emoji}</Text>
+                </Animated.View>
+                <View style={styles.textContainer}>
+                    {title ? (
+                        <Text
+                            style={[styles.title, { color: themeColors.title }]}
+                            numberOfLines={1}
+                        >
+                            {title}
+                        </Text>
+                    ) : null}
+                    {message ? (
+                        <Text
+                            style={[
+                                styles.message,
+                                { color: themeColors.message },
+                                !title && styles.messageSolo,
+                            ]}
+                            numberOfLines={2}
+                        >
+                            {message}
+                        </Text>
+                    ) : null}
+                </View>
+            </View>
+            {duration && duration !== Infinity && (
+                <ProgressBar
+                    duration={duration}
+                    color="#8B5CF6"
+                    trackColor={themeColors.progressTrack}
+                />
+            )}
         </View>
     );
 };
 
 const styles = StyleSheet.create({
-    emojiToast: {
-        width: wp(87),
-        minHeight: hp(6.5),
-        paddingHorizontal: wp(4),
-        paddingVertical: hp(1.2),
-        borderRadius: wp(3),
-        backgroundColor: '#FFFFFF',
-        alignItems: 'center',
+    container: {
+        width: wp(92),
+        borderRadius: 16,
+        overflow: 'hidden',
+        borderWidth: 1,
+    },
+    body: {
         flexDirection: 'row',
-        // Shadow for iOS
-        shadowColor: '#000',
-        shadowOffset: {
-            width: 0,
-            height: 4,
-        },
-        shadowOpacity: 0.15,
-        shadowRadius: 8,
-        // Shadow for Android
-        elevation: 6,
+        alignItems: 'center',
+        paddingHorizontal: 16,
+        paddingVertical: 14,
     },
-    emoji: {
-        fontSize: hp(2.8),
-        marginRight: wp(2),
+    emojiBadge: {
+        width: 40,
+        height: 40,
+        borderRadius: 12,
+        backgroundColor: 'rgba(139, 92, 246, 0.1)',
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginRight: 12,
     },
-    text: {
-        fontSize: hp(1.85),
-        color: '#1F2937',
-        fontWeight: '500',
+    emojiText: {
+        fontSize: 22,
+    },
+    textContainer: {
         flex: 1,
-        lineHeight: hp(2.4),
+        justifyContent: 'center',
+    },
+    title: {
+        fontSize: 15,
+        fontWeight: '600',
+        letterSpacing: -0.2,
+        lineHeight: 20,
+    },
+    message: {
+        fontSize: 13,
+        fontWeight: '400',
+        marginTop: 2,
+        lineHeight: 18,
+        letterSpacing: -0.1,
+    },
+    messageSolo: {
+        fontSize: 14,
+        fontWeight: '500',
+        lineHeight: 20,
     },
 });
 
-export default EmojiToast;
+export default React.memo(EmojiToast);
