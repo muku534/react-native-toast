@@ -3,73 +3,59 @@ import { View, StyleSheet } from 'react-native';
 import Animated, {
     useSharedValue,
     useAnimatedStyle,
-    withTiming,
+    withSpring,
     withDelay,
-    Easing,
-    interpolate,
 } from 'react-native-reanimated';
 
 /**
- * CrossIcon — Animated X mark.
- * Two strokes that draw in sequentially with a cross shape.
+ * CrossIcon — Pixel-perfect animated X mark.
  */
-const CrossIcon = ({ size = 22, color = '#DC2626', animated = true }) => {
-    const progress = useSharedValue(animated ? 0 : 1);
+const CrossIcon = ({ size = 20, color = '#EF4444' }) => {
+    const scale = useSharedValue(0.2);
+    const opacity = useSharedValue(0);
 
     useEffect(() => {
-        if (animated) {
-            progress.value = withDelay(
-                100,
-                withTiming(1, { duration: 400, easing: Easing.out(Easing.cubic) })
-            );
-        }
-    }, [animated]);
+        scale.value = withDelay(
+            100,
+            withSpring(1, { damping: 13, stiffness: 180, mass: 0.7 })
+        );
+        opacity.value = withDelay(100, withSpring(1));
+    }, []);
 
-    const stroke = Math.max(2, size * 0.12);
-    const barLen = size * 0.5;
+    const animatedStyle = useAnimatedStyle(() => ({
+        transform: [{ scale: scale.value }],
+        opacity: opacity.value,
+    }));
 
-    const bar1Style = useAnimatedStyle(() => {
-        const p = interpolate(progress.value, [0, 0.55], [0, 1], 'clamp');
-        return {
-            transform: [{ rotate: '45deg' }, { scaleY: p }],
-            opacity: p,
-        };
-    });
-
-    const bar2Style = useAnimatedStyle(() => {
-        const p = interpolate(progress.value, [0.3, 1], [0, 1], 'clamp');
-        return {
-            transform: [{ rotate: '-45deg' }, { scaleY: p }],
-            opacity: p,
-        };
-    });
+    const barLen = Math.round(size * 0.75);
+    const stroke = 2.4;
 
     return (
         <View style={[styles.container, { width: size, height: size }]}>
-            <Animated.View
-                style={[
-                    {
-                        position: 'absolute',
-                        width: stroke,
-                        height: barLen,
-                        backgroundColor: color,
-                        borderRadius: stroke,
-                    },
-                    bar1Style,
-                ]}
-            />
-            <Animated.View
-                style={[
-                    {
-                        position: 'absolute',
-                        width: stroke,
-                        height: barLen,
-                        backgroundColor: color,
-                        borderRadius: stroke,
-                    },
-                    bar2Style,
-                ]}
-            />
+            <Animated.View style={[styles.iconWrap, animatedStyle]}>
+                <View
+                    style={[
+                        styles.bar,
+                        {
+                            width: stroke,
+                            height: barLen,
+                            backgroundColor: color,
+                            transform: [{ rotate: '45deg' }],
+                        },
+                    ]}
+                />
+                <View
+                    style={[
+                        styles.bar,
+                        {
+                            width: stroke,
+                            height: barLen,
+                            backgroundColor: color,
+                            transform: [{ rotate: '-45deg' }],
+                        },
+                    ]}
+                />
+            </Animated.View>
         </View>
     );
 };
@@ -78,6 +64,16 @@ const styles = StyleSheet.create({
     container: {
         alignItems: 'center',
         justifyContent: 'center',
+    },
+    iconWrap: {
+        width: '100%',
+        height: '100%',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    bar: {
+        position: 'absolute',
+        borderRadius: 2,
     },
 });
 

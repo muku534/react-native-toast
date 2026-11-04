@@ -3,83 +3,53 @@ import { View, StyleSheet } from 'react-native';
 import Animated, {
     useSharedValue,
     useAnimatedStyle,
-    withTiming,
-    withDelay,
     withSpring,
-    Easing,
-    interpolate,
+    withDelay,
 } from 'react-native-reanimated';
 
 /**
- * CheckIcon — Animated checkmark.
- * Clean two-stroke design that draws in sequentially.
+ * CheckIcon — Pixel-perfect, fully rotated checkmark.
+ * Inner view preserves static -45deg rotation so Reanimated scale
+ * never overrides the rotation transform.
  */
-const CheckIcon = ({ size = 22, color = '#16A34A', animated = true }) => {
-    const progress = useSharedValue(animated ? 0 : 1);
+const CheckIcon = ({ size = 20, color = '#22C55E' }) => {
+    const scale = useSharedValue(0.2);
+    const opacity = useSharedValue(0);
 
     useEffect(() => {
-        if (animated) {
-            progress.value = withDelay(
-                100,
-                withTiming(1, { duration: 450, easing: Easing.out(Easing.cubic) })
-            );
-        }
-    }, [animated]);
+        scale.value = withDelay(
+            80,
+            withSpring(1, { damping: 13, stiffness: 180, mass: 0.7 })
+        );
+        opacity.value = withDelay(80, withSpring(1));
+    }, []);
 
-    const stroke = Math.max(2, size * 0.12);
-    const shortLen = size * 0.3;
-    const longLen = size * 0.5;
+    const animatedStyle = useAnimatedStyle(() => ({
+        transform: [{ scale: scale.value }],
+        opacity: opacity.value,
+    }));
 
-    const leftBarStyle = useAnimatedStyle(() => {
-        const p = interpolate(progress.value, [0, 0.45], [0, 1], 'clamp');
-        return {
-            transform: [{ rotate: '45deg' }, { scaleY: p }],
-            opacity: p,
-        };
-    });
-
-    const rightBarStyle = useAnimatedStyle(() => {
-        const p = interpolate(progress.value, [0.3, 1], [0, 1], 'clamp');
-        return {
-            transform: [{ rotate: '-45deg' }, { scaleY: p }],
-            opacity: p,
-        };
-    });
+    // Golden ratio checkmark proportions: long side ~14px, short side ~7.5px
+    const checkWidth = Math.round(size * 0.72); // 14px
+    const checkHeight = Math.round(size * 0.38); // 7.5px
+    const strokeWidth = 2.5;
 
     return (
         <View style={[styles.container, { width: size, height: size }]}>
-            <View style={[styles.checkWrap, { width: size * 0.6, height: size * 0.6 }]}>
-                <Animated.View
+            <Animated.View style={[styles.animWrap, animatedStyle]}>
+                <View
                     style={[
+                        styles.checkStroke,
                         {
-                            position: 'absolute',
-                            bottom: 0,
-                            left: 0,
-                            width: stroke,
-                            height: shortLen,
-                            backgroundColor: color,
-                            borderRadius: stroke,
-                            transformOrigin: 'bottom',
+                            width: checkWidth,
+                            height: checkHeight,
+                            borderLeftWidth: strokeWidth,
+                            borderBottomWidth: strokeWidth,
+                            borderColor: color,
                         },
-                        leftBarStyle,
                     ]}
                 />
-                <Animated.View
-                    style={[
-                        {
-                            position: 'absolute',
-                            bottom: 0,
-                            left: stroke * 0.4,
-                            width: stroke,
-                            height: longLen,
-                            backgroundColor: color,
-                            borderRadius: stroke,
-                            transformOrigin: 'bottom',
-                        },
-                        rightBarStyle,
-                    ]}
-                />
-            </View>
+            </Animated.View>
         </View>
     );
 };
@@ -89,9 +59,15 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
     },
-    checkWrap: {
+    animWrap: {
         alignItems: 'center',
         justifyContent: 'center',
+    },
+    checkStroke: {
+        transform: [{ rotate: '-45deg' }],
+        borderBottomLeftRadius: 1.5,
+        marginTop: -2,
+        marginLeft: 1,
     },
 });
 

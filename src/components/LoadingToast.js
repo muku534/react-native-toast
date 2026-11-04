@@ -3,7 +3,7 @@ import BaseToast from './BaseToast';
 import { LoadingSpinner } from './icons';
 import { TOAST_COLORS, TOAST_DEFAULTS } from '../utils/theme';
 
-const LoadingToast = ({ title, message, theme = 'light', duration }) => {
+const LoadingToast = ({ title, message, theme = 'light', duration, expandProgress }) => {
     const isDark = theme === 'dark';
     const colors = TOAST_COLORS.loading;
 
@@ -17,6 +17,7 @@ const LoadingToast = ({ title, message, theme = 'light', duration }) => {
             theme={theme}
             duration={duration}
             showProgress={false}
+            expandProgress={expandProgress}
         />
     );
 };

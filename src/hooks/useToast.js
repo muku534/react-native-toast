@@ -32,64 +32,66 @@ const useToast = () => {
     };
 
     const success = (message, options) => {
-        const { title, ...rest } = options || {};
-        return show(<SuccessToast title={title} message={message} />, rest);
+        const { title, theme, ...rest } = options || {};
+        return show(<SuccessToast title={title} message={message} theme={theme} />, { ...rest, theme });
     };
 
     const error = (message, options) => {
-        const { title, ...rest } = options || {};
-        return show(<ErrorToast title={title} message={message} />, rest);
+        const { title, theme, ...rest } = options || {};
+        return show(<ErrorToast title={title} message={message} theme={theme} />, { ...rest, theme });
     };
 
     const info = (message, options) => {
-        const { title, ...rest } = options || {};
-        return show(<InfoToast title={title} message={message} />, rest);
+        const { title, theme, ...rest } = options || {};
+        return show(<InfoToast title={title} message={message} theme={theme} />, { ...rest, theme });
     };
 
     const warning = (message, options) => {
-        const { title, ...rest } = options || {};
-        return show(<WarningToast title={title} message={message} />, rest);
+        const { title, theme, ...rest } = options || {};
+        return show(<WarningToast title={title} message={message} theme={theme} />, { ...rest, theme });
     };
 
     const promise = (promiseValue, { loading, success: successMsg, error: errorMsg }, options) => {
+        const { theme, ...rest } = options || {};
         return toastManagerInstance.promise(
             promiseValue,
             {
                 loading: typeof loading === 'string'
-                    ? <LoadingToast message={loading} />
+                    ? <LoadingToast message={loading} theme={theme} />
                     : loading,
                 success: typeof successMsg === 'string'
-                    ? <SuccessToast message={successMsg} />
+                    ? <SuccessToast message={successMsg} theme={theme} />
                     : typeof successMsg === 'function'
                         ? (result) => {
                             const msg = successMsg(result);
-                            return typeof msg === 'string' ? <SuccessToast message={msg} /> : msg;
+                            return typeof msg === 'string' ? <SuccessToast message={msg} theme={theme} /> : msg;
                         }
                         : successMsg,
                 error: typeof errorMsg === 'string'
-                    ? <ErrorToast message={errorMsg} />
+                    ? <ErrorToast message={errorMsg} theme={theme} />
                     : typeof errorMsg === 'function'
                         ? (err) => {
                             const msg = errorMsg(err);
-                            return typeof msg === 'string' ? <ErrorToast message={msg} /> : msg;
+                            return typeof msg === 'string' ? <ErrorToast message={msg} theme={theme} /> : msg;
                         }
                         : errorMsg,
             },
-            options
+            { ...rest, theme }
         );
     };
 
     const custom = (content, options) => {
-        return show(<CustomToast content={content} />, options);
+        const { theme, ...rest } = options || {};
+        return show(<CustomToast content={content} theme={theme} />, { ...rest, theme });
     };
 
     const emoji = (message, emojiChar, options) => {
-        const { title, ...rest } = options || {};
-        return show(<EmojiToast title={title} message={message} emoji={emojiChar} />, rest);
+        const { title, theme, ...rest } = options || {};
+        return show(<EmojiToast title={title} message={message} emoji={emojiChar} theme={theme} />, { ...rest, theme });
     };
 
     const dismiss = (id) => {
-        toastManagerInstance.remove(id);
+        toastManagerInstance.dismiss(id);
     };
 
     const dismissAll = () => {

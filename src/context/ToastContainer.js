@@ -16,8 +16,12 @@ const ToastContainer = ({
     swipeable = true,
 } = {}) => {
     const [toasts, setToasts] = useState([]);
-    const [theme, setTheme] = useState(forcedTheme ?? (Appearance?.getColorScheme?.() || 'light'));
+    const [dismissingIds, setDismissingIds] = useState(() => new Set());
+    const [systemTheme, setSystemTheme] = useState(() => Appearance?.getColorScheme?.() || 'light');
     const [keyboardHeight, setKeyboardHeight] = useState(0);
+
+    // Active theme resolves forcedTheme (if given and not 'auto') or systemTheme
+    const activeTheme = (forcedTheme && forcedTheme !== 'auto') ? forcedTheme : systemTheme;
 
     useEffect(() => {
         // Configure the manager with our settings
@@ -31,10 +35,27 @@ const ToastContainer = ({
                 const filtered = prev.filter((t) => t.id !== toast.id);
                 return [...filtered, toast];
             });
+            // Ensure newly shown toast is not in dismissing set
+            setDismissingIds((prev) => {
+                if (!prev.has(toast.id)) return prev;
+                const next = new Set(prev);
+                next.delete(toast.id);
+                return next;
+            });
+        };
+
+        const handleDismiss = (id) => {
+            setDismissingIds((prev) => new Set(prev).add(id));
         };
 
         const handleRemove = (id) => {
             setToasts((prev) => prev.filter((toast) => toast.id !== id));
+            setDismissingIds((prev) => {
+                if (!prev.has(id)) return prev;
+                const next = new Set(prev);
+                next.delete(id);
+                return next;
+            });
         };
 
         const handleUpdate = (updatedToast) => {
@@ -44,16 +65,14 @@ const ToastContainer = ({
         };
 
         toastManagerInstance.on('show', handleShow);
+        toastManagerInstance.on('dismiss', handleDismiss);
         toastManagerInstance.on('remove', handleRemove);
         toastManagerInstance.on('update', handleUpdate);
 
-        // Theme listener
-        let appearanceSub;
-        if (!forcedTheme && Appearance?.addChangeListener) {
-            appearanceSub = Appearance.addChangeListener(({ colorScheme }) => {
-                setTheme(colorScheme ?? 'light');
-            });
-        }
+        // System appearance listener for automatic dark/light switching
+        const appearanceSub = Appearance?.addChangeListener?.(({ colorScheme }) => {
+            setSystemTheme(colorScheme || 'light');
+        });
 
         // Keyboard listener for bottom toasts
         const keyboardShowSub = Keyboard.addListener(
@@ -67,13 +86,14 @@ const ToastContainer = ({
 
         return () => {
             toastManagerInstance.off('show', handleShow);
+            toastManagerInstance.off('dismiss', handleDismiss);
             toastManagerInstance.off('remove', handleRemove);
             toastManagerInstance.off('update', handleUpdate);
-            if (appearanceSub?.remove) appearanceSub.remove();
+            appearanceSub?.remove?.();
             keyboardShowSub.remove();
             keyboardHideSub.remove();
         };
-    }, [forcedTheme]);
+    }, []);
 
     // Calculate safe top margin
     const getTopMargin = useCallback(() => {
@@ -107,8 +127,12 @@ const ToastContainer = ({
     }, [toasts, defaultPosition]);
 
     const topMargin = getTopMargin();
-    const toastSpacing = hp(1.2);
-    const toastHeight = hp(8.5);
+    const toastSpacing = 10;
+    const toastHeight = 56;
+
+    const handleToastHide = useCallback((id) => {
+        toastManagerInstance.remove(id);
+    }, []);
 
     return (
         <>
@@ -121,15 +145,15 @@ const ToastContainer = ({
                     {topToasts.map((toast, index) => (
                         <Toast
                             key={toast.id}
-                            visible={true}
+                            visible={!dismissingIds.has(toast.id)}
                             duration={toast?.options?.duration}
                             position="top"
-                            theme={theme}
+                            theme={toast?.options?.theme || activeTheme}
                             style={[
                                 toast?.options?.style || {},
                                 { marginTop: index * (toastHeight + toastSpacing) },
                             ]}
-                            onHide={() => toastManagerInstance.remove(toast.id)}
+                            onHide={() => handleToastHide(toast.id)}
                         >
                             {toast.content}
                         </Toast>
@@ -143,15 +167,15 @@ const ToastContainer = ({
                     {centerToasts.map((toast, index) => (
                         <Toast
                             key={toast.id}
-                            visible={true}
+                            visible={!dismissingIds.has(toast.id)}
                             duration={toast?.options?.duration}
                             position="center"
-                            theme={theme}
+                            theme={toast?.options?.theme || activeTheme}
                             style={[
                                 toast?.options?.style || {},
                                 { marginTop: index * (toastHeight + toastSpacing) },
                             ]}
-                            onHide={() => toastManagerInstance.remove(toast.id)}
+                            onHide={() => handleToastHide(toast.id)}
                         >
                             {toast.content}
                         </Toast>
@@ -171,15 +195,15 @@ const ToastContainer = ({
                     {bottomToasts.map((toast, index) => (
                         <Toast
                             key={toast.id}
-                            visible={true}
+                            visible={!dismissingIds.has(toast.id)}
                             duration={toast?.options?.duration}
                             position="bottom"
-                            theme={theme}
+                            theme={toast?.options?.theme || activeTheme}
                             style={[
                                 toast?.options?.style || {},
                                 { bottom: hp(2) + index * (toastHeight + toastSpacing) },
                             ]}
-                            onHide={() => toastManagerInstance.remove(toast.id)}
+                            onHide={() => handleToastHide(toast.id)}
                         >
                             {toast.content}
                         </Toast>

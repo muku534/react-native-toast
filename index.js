@@ -1,4 +1,4 @@
-// rn-toastify v2.0.0 — Production-ready toast notifications for React Native
+// rn-toastify v2.0.1 — Production-ready toast notifications for React Native
 const useToastModule = require('./src/hooks/useToast');
 const ToastModule = require('./src/Toast');
 const ToastContainerModule = require('./src/context/ToastContainer');

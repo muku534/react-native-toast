@@ -17,15 +17,15 @@
 
 ---
 
-## ✨ What's New in v2: The Premium Redesign
+## ✨ What's New in v2.0.1: Dynamic Island Morphing Alerts
 
-We completely overhauled rn-toastify to feel like a **native, premium OS feature** rather than a basic third-party library.
+We completely overhauled rn-toastify into an **ultra-premium, Apple Dynamic Island-inspired alert system**:
 
-- 💎 **Ultra-Premium Design**: Compact "floating pill" layout with soft, multi-layered drop shadows.
-- 🪞 **Glassmorphism**: Semi-transparent backgrounds that beautifully blend with your app's content in both light and dark modes.
-- 🎨 **Edge Accents**: Elegant left-edge color indicators for Success, Error, Info, and Warning states.
-- 🌊 **Fluid Physics**: Powered by `react-native-reanimated` for 60fps spring animations and interactive pan gestures.
-- 📦 **Zero Asset Bloat**: Completely removed Lottie dependencies. All icons are now built-in, lightweight animated components.
+- 🏝️ **2-Phase Circular Morph**: Toasts enter at the top as a compact, glowing round circular badge (`52×52px`), settle cleanly, and then fluidly expand horizontally into a sleek glassmorphic capsule.
+- 🔄 **Fluid Collapse on Dismiss**: Upon dismissal, the pill smoothly collapses horizontally back into the circular badge before floating away.
+- 🌓 **Full Dark & Light Mode**: Real-time adaptive styling with custom glassmorphic tokens, ambient drop shadows, and per-toast `theme` overrides.
+- 🌊 **Liquid Physics**: Powered by `react-native-reanimated` with custom cubic-bezier easing curves and zero text reflow/re-wrapping mid-flight.
+- 📦 **Zero-Dependency Core**: Lightweight with zero external event polyfills. Built-in vector icons.
 
 ---
 
@@ -33,14 +33,14 @@ We completely overhauled rn-toastify to feel like a **native, premium OS feature
 
 | Feature | Description |
 |---------|-------------|
+| 🏝️ **Dynamic Island Morph** | 2-phase circle-to-capsule morphing animation with glowing badges. |
 | 🎨 **6 Built-in Types** | Success, Error, Info, Warning, Loading, Emoji, plus full Custom support. |
 | 👆 **Interactive Swipes** | Swipe horizontally or vertically to intuitively dismiss alerts. |
-| 📊 **Progress Bar** | Animated, flush-to-bottom countdown indicator for auto-dismissal. |
-| 🎭 **System Theme** | Automatically adapts to Light/Dark mode, or can be forced via props. |
+| 🌓 **Light & Dark Themes** | Automatically adapts to Light/Dark mode, or can be forced via props. |
 | 📚 **Smart Queue** | Set a `maxVisible` limit; excess toasts automatically queue up. |
 | ⏳ **Promise API** | Elegant loading → success/error state management for async tasks. |
 | ⌨️ **Keyboard Aware** | Bottom toasts intelligently shift up when the keyboard appears. |
-| 🔷 **TypeScript** | Built with TS for full type safety and autocompletion. |
+| 🔷 **TypeScript** | Built with full TS typings, autocomplete, and zero compile errors. |
 
 ---
 
@@ -150,6 +150,7 @@ Pass these options as the second argument to customize individual toasts:
 | `title` | `string` | `undefined` | Bold title text displayed above the message |
 | `duration` | `number` | `3000` | Delay in ms before auto-dismissing. Use `Infinity` to disable. |
 | `position` | `'top' \| 'bottom' \| 'center'` | `'top'` | Screen positioning |
+| `theme` | `'light' \| 'dark' \| 'auto'` | container/system | Override theme for this specific toast |
 
 ---
 

@@ -5,25 +5,34 @@ import Animated, {
     useAnimatedStyle,
     withTiming,
     withSpring,
-    withDelay,
     runOnJS,
     Easing,
     interpolate,
-    cancelAnimation,
+    Extrapolation,
 } from 'react-native-reanimated';
 
-const SPRING_CONFIG = {
-    damping: 18,
-    stiffness: 160,
-    mass: 0.8,
+// Gentle, floating spring for the round circle arrival
+const CIRCLE_SPRING = {
+    damping: 22,
+    stiffness: 95,
+    mass: 0.9,
 };
 
-const Toast = ({ visible, duration, position, children, onHide, style, theme }) => {
+const Toast = ({ visible, duration, position = 'top', children, onHide, style, theme }) => {
     const opacity = useSharedValue(0);
-    const translateY = useSharedValue(position === 'top' ? -80 : position === 'center' ? 30 : 80);
+    const translateY = useSharedValue(position === 'top' ? -65 : position === 'center' ? 25 : 65);
     const translateX = useSharedValue(0);
-    const scale = useSharedValue(0.85);
+    const scale = useSharedValue(0.65);
+    const expandProgress = useSharedValue(0); // 0 = compact circle, 1 = expanded capsule
     const hideCalledRef = useRef(false);
+    const isHidingRef = useRef(false);
+    const hasEnteredRef = useRef(false);
+
+    // Keep onHide reference stable so re-renders do NOT re-trigger animations
+    const onHideRef = useRef(onHide);
+    useEffect(() => {
+        onHideRef.current = onHide;
+    }, [onHide]);
 
     const positionStyle = useMemo(
         () => {
@@ -37,54 +46,94 @@ const Toast = ({ visible, duration, position, children, onHide, style, theme }) 
     const safeOnHide = useCallback(() => {
         if (!hideCalledRef.current) {
             hideCalledRef.current = true;
-            onHide?.();
+            onHideRef.current?.();
         }
-    }, [onHide]);
-
-    useEffect(() => {
-        hideCalledRef.current = false;
-
-        if (visible) {
-            // Entrance animation — smooth spring with overshoot
-            opacity.value = withTiming(1, { duration: 280, easing: Easing.out(Easing.cubic) });
-            translateY.value = withSpring(0, SPRING_CONFIG);
-            scale.value = withSpring(1, { ...SPRING_CONFIG, damping: 14 });
-            translateX.value = 0;
-
-            // Auto-dismiss timer
-            if (duration && duration !== Infinity) {
-                const hideTimeout = setTimeout(() => {
-                    hideToast();
-                }, duration);
-
-                return () => clearTimeout(hideTimeout);
-            }
-        } else {
-            hideToast();
-        }
-    }, [visible, duration]);
+    }, []);
 
     const hideToast = useCallback(() => {
-        const exitY = position === 'top' ? -60 : position === 'center' ? 20 : 60;
+        if (isHidingRef.current || hideCalledRef.current) return;
+        isHidingRef.current = true;
 
-        opacity.value = withTiming(0, {
-            duration: 250,
-            easing: Easing.in(Easing.cubic),
-        });
-        translateY.value = withTiming(exitY, {
-            duration: 250,
-            easing: Easing.in(Easing.cubic),
-        });
-        scale.value = withTiming(0.9, {
-            duration: 250,
-            easing: Easing.in(Easing.cubic),
-        }, (finished) => {
-            // Only fire onHide after animation actually completes
-            if (finished) {
-                runOnJS(safeOnHide)();
+        const exitY = position === 'top' ? -70 : position === 'center' ? 20 : 70;
+
+        // Fallback safety timer
+        const safetyTimer = setTimeout(() => {
+            safeOnHide();
+        }, 1200);
+
+        // Phase 1: Smoothly and visibly collapse capsule back into the round circle
+        expandProgress.value = withTiming(0, {
+            duration: 450,
+            easing: Easing.bezier(0.25, 0.1, 0.25, 1),
+        }, (finishedCollapse) => {
+            if (finishedCollapse) {
+                // Phase 2: Once back in circle form, gracefully float up & scale away
+                opacity.value = withTiming(0, {
+                    duration: 320,
+                    easing: Easing.in(Easing.cubic),
+                });
+                scale.value = withTiming(0.4, {
+                    duration: 340,
+                    easing: Easing.in(Easing.cubic),
+                });
+                translateY.value = withTiming(exitY, {
+                    duration: 340,
+                    easing: Easing.in(Easing.cubic),
+                }, (finishedExit) => {
+                    if (finishedExit) {
+                        clearTimeout(safetyTimer);
+                        runOnJS(safeOnHide)();
+                    }
+                });
             }
         });
     }, [position, safeOnHide]);
+
+    // Entrance and timer effect — runs ONLY ONCE when mounted/visible
+    useEffect(() => {
+        if (visible && !hasEnteredRef.current) {
+            hasEnteredRef.current = true;
+            hideCalledRef.current = false;
+            isHidingRef.current = false;
+
+            // Step 1: Circle smoothly floats down, scales to full size, and settles cleanly
+            opacity.value = withTiming(1, { duration: 420, easing: Easing.out(Easing.cubic) });
+            translateY.value = withTiming(0, {
+                duration: 520,
+                easing: Easing.bezier(0.16, 1, 0.3, 1),
+            });
+            scale.value = withTiming(1, {
+                duration: 500,
+                easing: Easing.bezier(0.16, 1, 0.3, 1),
+            });
+            translateX.value = 0;
+            expandProgress.value = 0;
+
+            // Step 2: Dwell pause so the circular badge lands & settles properly first,
+            // and only then smoothly expands into the full capsule.
+            const expandTimer = setTimeout(() => {
+                expandProgress.value = withTiming(1, {
+                    duration: 620,
+                    easing: Easing.bezier(0.25, 0.1, 0.25, 1), // Liquid smooth expansion curve (gentle start, fluid cruise, soft cushion)
+                });
+            }, 950);
+
+            // Step 3: Auto-dismiss timer (gives full reading duration after expansion)
+            let hideTimeout;
+            if (duration && duration !== Infinity) {
+                hideTimeout = setTimeout(() => {
+                    hideToast();
+                }, duration + 1550);
+            }
+
+            return () => {
+                clearTimeout(expandTimer);
+                if (hideTimeout) clearTimeout(hideTimeout);
+            };
+        } else if (!visible && hasEnteredRef.current) {
+            hideToast();
+        }
+    }, [visible, duration, hideToast]);
 
     const animatedStyle = useAnimatedStyle(() => ({
         opacity: opacity.value,
@@ -99,65 +148,61 @@ const Toast = ({ visible, duration, position, children, onHide, style, theme }) 
         () =>
             PanResponder.create({
                 onMoveShouldSetPanResponder: (evt, gestureState) => {
-                    // More responsive swipe detection
                     return Math.abs(gestureState.dx) > 15 || Math.abs(gestureState.dy) > 15;
                 },
                 onPanResponderMove: (evt, gestureState) => {
                     translateX.value = gestureState.dx;
-                    // Add subtle vertical follow for natural feel
                     if (position === 'top' && gestureState.dy < 0) {
                         translateY.value = gestureState.dy * 0.3;
                     } else if (position === 'bottom' && gestureState.dy > 0) {
                         translateY.value = gestureState.dy * 0.3;
                     }
-                    // Fade as user swipes further
                     opacity.value = interpolate(
                         Math.abs(gestureState.dx),
                         [0, 150],
                         [1, 0.3],
-                        'clamp'
+                        Extrapolation.CLAMP
                     );
                 },
                 onPanResponderRelease: (evt, gestureState) => {
                     if (Math.abs(gestureState.dx) > 80) {
                         // Dismiss: fly out in swipe direction
                         const direction = gestureState.dx > 0 ? 1 : -1;
-                        translateX.value = withTiming(direction * 400, { duration: 200 });
-                        opacity.value = withTiming(0, { duration: 200 });
-                        scale.value = withTiming(0.85, { duration: 200 }, (finished) => {
+                        translateX.value = withTiming(direction * 400, { duration: 250 });
+                        opacity.value = withTiming(0, { duration: 250 });
+                        scale.value = withTiming(0.85, { duration: 250 }, (finished) => {
                             if (finished) {
                                 runOnJS(safeOnHide)();
                             }
                         });
                     } else if (position === 'top' && gestureState.dy < -40) {
-                        // Swipe up to dismiss (for top toasts)
-                        translateY.value = withTiming(-100, { duration: 200 });
-                        opacity.value = withTiming(0, { duration: 200 }, (finished) => {
-                            if (finished) runOnJS(safeOnHide)();
-                        });
+                        // Swipe up to dismiss (collapses to circle and pops away)
+                        hideToast();
                     } else if (position === 'bottom' && gestureState.dy > 40) {
-                        // Swipe down to dismiss (for bottom toasts)
-                        translateY.value = withTiming(100, { duration: 200 });
-                        opacity.value = withTiming(0, { duration: 200 }, (finished) => {
-                            if (finished) runOnJS(safeOnHide)();
-                        });
+                        // Swipe down to dismiss (collapses to circle and pops away)
+                        hideToast();
                     } else {
                         // Snap back with spring
-                        translateX.value = withSpring(0, { damping: 15, stiffness: 200 });
-                        translateY.value = withSpring(0, { damping: 15, stiffness: 200 });
+                        translateX.value = withSpring(0, { damping: 18, stiffness: 180 });
+                        translateY.value = withSpring(0, { damping: 18, stiffness: 180 });
                         opacity.value = withSpring(1);
                     }
                 },
             }),
-        [position, safeOnHide]
+        [position, hideToast, safeOnHide]
     );
 
     if (!visible) return null;
 
-    // If children is a React element, inject theme and duration props
+    // Inject theme, duration, expandProgress and hideToast props to children
     const renderContent = () => {
         if (React.isValidElement(children)) {
-            return React.cloneElement(children, { theme, duration });
+            return React.cloneElement(children, {
+                theme: children.props.theme || theme,
+                duration,
+                expandProgress,
+                hideToast,
+            });
         }
         return children;
     };

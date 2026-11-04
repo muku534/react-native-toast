@@ -3,7 +3,7 @@ import BaseToast from './BaseToast';
 import { WarningIcon } from './icons';
 import { TOAST_COLORS, TOAST_DEFAULTS } from '../utils/theme';
 
-const WarningToast = ({ title, message, theme = 'light', duration }) => {
+const WarningToast = ({ title, message, theme = 'light', duration, expandProgress }) => {
     const isDark = theme === 'dark';
     const colors = TOAST_COLORS.warning;
 
@@ -16,6 +16,7 @@ const WarningToast = ({ title, message, theme = 'light', duration }) => {
             toastType="warning"
             theme={theme}
             duration={duration}
+            expandProgress={expandProgress}
         />
     );
 };

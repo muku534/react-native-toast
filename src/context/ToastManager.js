@@ -1,13 +1,50 @@
-import { EventEmitter } from 'events';
 import { TOAST_DEFAULTS } from '../utils/theme';
 
 let _idCounter = 0;
 const generateId = () => `toast_${++_idCounter}_${Date.now()}`;
 
+/**
+ * Lightweight, zero-dependency EventEmitter for React Native.
+ */
+class EventEmitter {
+    constructor() {
+        this._listeners = new Map();
+    }
+
+    on(event, handler) {
+        if (!this._listeners.has(event)) {
+            this._listeners.set(event, new Set());
+        }
+        this._listeners.get(event).add(handler);
+        return () => this.off(event, handler);
+    }
+
+    off(event, handler) {
+        if (this._listeners.has(event)) {
+            this._listeners.get(event).delete(handler);
+        }
+    }
+
+    emit(event, ...args) {
+        if (this._listeners.has(event)) {
+            this._listeners.get(event).forEach((handler) => {
+                try {
+                    handler(...args);
+                } catch (e) {
+                    console.error(`[rn-toastify] Error in listener for "${event}":`, e);
+                }
+            });
+        }
+    }
+
+    setMaxListeners() {
+        // No-op for compatibility
+    }
+}
+
 class ToastManager extends EventEmitter {
     constructor() {
         super();
-        this.setMaxListeners(20);
         this._activeToasts = new Map();
         this._queue = [];
         this._maxVisible = TOAST_DEFAULTS.maxVisible;
@@ -60,7 +97,15 @@ class ToastManager extends EventEmitter {
     }
 
     /**
-     * Remove a toast by ID.
+     * Request a toast to dismiss gracefully with collapse animation.
+     * @param {string} id
+     */
+    dismiss(id) {
+        this.emit('dismiss', id);
+    }
+
+    /**
+     * Remove a toast by ID immediately.
      * @param {string} id
      */
     remove(id) {
@@ -77,11 +122,11 @@ class ToastManager extends EventEmitter {
     }
 
     /**
-     * Dismiss all active toasts.
+     * Dismiss all active toasts with animation.
      */
     dismissAll() {
         const ids = Array.from(this._activeToasts.keys());
-        ids.forEach((id) => this.remove(id));
+        ids.forEach((id) => this.dismiss(id));
         this._queue = [];
     }
 

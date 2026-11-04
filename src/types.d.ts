@@ -11,6 +11,8 @@ export interface ToastOptions {
     style?: object;
     /** Bold title text (displayed above message) */
     title?: string;
+    /** Override theme for this specific toast. Default: inherited from container/system */
+    theme?: 'light' | 'dark' | 'auto';
 }
 
 export interface PromiseMessages<T = any> {
@@ -65,8 +67,8 @@ export { useToast };
 // ─── ToastContainer ──────────────────────────────────────────────────────────
 
 export interface ToastContainerProps {
-    /** Force a specific theme. If omitted, follows system preference */
-    theme?: 'light' | 'dark';
+    /** Force a specific theme. If omitted or 'auto', follows system preference */
+    theme?: 'light' | 'dark' | 'auto';
     /** Maximum number of visible toasts at once. Default: 3 */
     maxVisible?: number;
     /** Default toast position when not specified per-toast. Default: 'top' */
@@ -89,8 +91,8 @@ export interface ToastComponentProps {
     /** Body message text */
     message?: string;
     /** Theme (injected by container, can be overridden) */
-    theme?: 'light' | 'dark';
-    /** Duration (injected by container for progress bar) */
+    theme?: 'light' | 'dark' | 'auto';
+    /** Duration (injected by container) */
     duration?: number;
 }
 

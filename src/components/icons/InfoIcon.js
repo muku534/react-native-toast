@@ -3,45 +3,44 @@ import { View, StyleSheet } from 'react-native';
 import Animated, {
     useSharedValue,
     useAnimatedStyle,
-    withTiming,
+    withSpring,
     withDelay,
-    Easing,
 } from 'react-native-reanimated';
 
 /**
- * InfoIcon — Animated "i" information symbol.
- * Dot + vertical bar that fade in.
+ * InfoIcon — Pixel-perfect animated 'i' mark.
  */
-const InfoIcon = ({ size = 22, color = '#2563EB', animated = true }) => {
-    const opacity = useSharedValue(animated ? 0 : 1);
+const InfoIcon = ({ size = 20, color = '#3B82F6' }) => {
+    const scale = useSharedValue(0.2);
+    const opacity = useSharedValue(0);
 
     useEffect(() => {
-        if (animated) {
-            opacity.value = withDelay(
-                100,
-                withTiming(1, { duration: 350, easing: Easing.out(Easing.cubic) })
-            );
-        }
-    }, [animated]);
+        scale.value = withDelay(
+            100,
+            withSpring(1, { damping: 13, stiffness: 180, mass: 0.7 })
+        );
+        opacity.value = withDelay(100, withSpring(1));
+    }, []);
 
-    const contentStyle = useAnimatedStyle(() => ({
+    const animatedStyle = useAnimatedStyle(() => ({
+        transform: [{ scale: scale.value }],
         opacity: opacity.value,
     }));
 
-    const dotSize = Math.max(3, size * 0.16);
-    const barW = Math.max(2, size * 0.12);
-    const barH = size * 0.35;
+    const dotSize = 3.6;
+    const barW = 2.4;
+    const barH = 8.5;
 
     return (
         <View style={[styles.container, { width: size, height: size }]}>
-            <Animated.View style={[styles.content, contentStyle]}>
+            <Animated.View style={[styles.content, animatedStyle]}>
                 <View
                     style={{
                         width: dotSize,
                         height: dotSize,
                         borderRadius: dotSize / 2,
                         backgroundColor: color,
-                        marginBottom: size * 0.08,
+                        marginBottom: 2.5,
                     }}
                 />
                 <View
@@ -49,7 +48,7 @@ const InfoIcon = ({ size = 22, color = '#2563EB', animated = true }) => {
                         width: barW,
                         height: barH,
                         backgroundColor: color,
-                        borderRadius: barW,
+                        borderRadius: 1.5,
                     }}
                 />
             </Animated.View>

@@ -3,7 +3,7 @@ import BaseToast from './BaseToast';
 import { CheckIcon } from './icons';
 import { TOAST_COLORS, TOAST_DEFAULTS } from '../utils/theme';
 
-const SuccessToast = ({ title, message, theme = 'light', duration }) => {
+const SuccessToast = ({ title, message, theme = 'light', duration, expandProgress }) => {
     const isDark = theme === 'dark';
     const colors = TOAST_COLORS.success;
 
@@ -16,6 +16,7 @@ const SuccessToast = ({ title, message, theme = 'light', duration }) => {
             toastType="success"
             theme={theme}
             duration={duration}
+            expandProgress={expandProgress}
         />
     );
 };

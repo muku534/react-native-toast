@@ -1,9 +1,15 @@
 {
   "name": "rn-toastify",
-  "version": "2.0.0",
-  "description": "A professional, production-ready toast notification library for React Native. Featuring smooth spring animations, swipe-to-dismiss gestures, progress bars, queue management, and a beautiful design system with light/dark themes.",
+  "version": "2.0.1",
+  "description": "A professional, production-ready toast notification library for React Native inspired by Apple's Dynamic Island. Featuring 2-phase circular morphing capsule alerts, fluid Reanimated transitions, swipe-to-dismiss gestures, queue management, and ultra-premium light/dark themes.",
   "main": "index.js",
   "types": "src/types.d.ts",
+  "files": [
+    "index.js",
+    "src",
+    "README.MD",
+    "LICENSE"
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/muku534/react-native-toast"
@@ -74,7 +80,7 @@
     }
   },
   "dependencies": {
-    "events": "^3.3.0"
+    "@babel/runtime": "^7.25.0"
   },
   "devDependencies": {
     "@testing-library/jest-native": "^5.4.3",

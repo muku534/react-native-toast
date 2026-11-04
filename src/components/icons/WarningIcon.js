@@ -3,58 +3,44 @@ import { View, StyleSheet } from 'react-native';
 import Animated, {
     useSharedValue,
     useAnimatedStyle,
-    withTiming,
+    withSpring,
     withDelay,
-    withSequence,
-    Easing,
 } from 'react-native-reanimated';
 
 /**
- * WarningIcon — Animated exclamation mark with subtle shake.
- * Bar + dot that fade in, followed by a quick shake.
+ * WarningIcon — Pixel-perfect animated '!' mark.
  */
-const WarningIcon = ({ size = 22, color = '#D97706', animated = true }) => {
-    const opacity = useSharedValue(animated ? 0 : 1);
-    const shake = useSharedValue(0);
+const WarningIcon = ({ size = 20, color = '#F59E0B' }) => {
+    const scale = useSharedValue(0.2);
+    const opacity = useSharedValue(0);
 
     useEffect(() => {
-        if (animated) {
-            opacity.value = withDelay(
-                100,
-                withTiming(1, { duration: 350, easing: Easing.out(Easing.cubic) })
-            );
-            shake.value = withDelay(
-                350,
-                withSequence(
-                    withTiming(-2.5, { duration: 40 }),
-                    withTiming(2.5, { duration: 40 }),
-                    withTiming(-1.5, { duration: 40 }),
-                    withTiming(1.5, { duration: 40 }),
-                    withTiming(0, { duration: 40 })
-                )
-            );
-        }
-    }, [animated]);
+        scale.value = withDelay(
+            100,
+            withSpring(1, { damping: 13, stiffness: 180, mass: 0.7 })
+        );
+        opacity.value = withDelay(100, withSpring(1));
+    }, []);
 
-    const contentStyle = useAnimatedStyle(() => ({
+    const animatedStyle = useAnimatedStyle(() => ({
+        transform: [{ scale: scale.value }],
         opacity: opacity.value,
-        transform: [{ translateX: shake.value }],
     }));
 
-    const barW = Math.max(2, size * 0.12);
-    const barH = size * 0.35;
-    const dotSize = Math.max(3, size * 0.16);
+    const barW = 2.4;
+    const barH = 8.5;
+    const dotSize = 3.6;
 
     return (
         <View style={[styles.container, { width: size, height: size }]}>
-            <Animated.View style={[styles.content, contentStyle]}>
+            <Animated.View style={[styles.content, animatedStyle]}>
                 <View
                     style={{
                         width: barW,
                         height: barH,
                         backgroundColor: color,
-                        borderRadius: barW,
-                        marginBottom: size * 0.08,
+                        borderRadius: 1.5,
+                        marginBottom: 2.5,
                     }}
                 />
                 <View

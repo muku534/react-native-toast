@@ -3,7 +3,7 @@ import BaseToast from './BaseToast';
 import { InfoIcon } from './icons';
 import { TOAST_COLORS, TOAST_DEFAULTS } from '../utils/theme';
 
-const InfoToast = ({ title, message, theme = 'light', duration }) => {
+const InfoToast = ({ title, message, theme = 'light', duration, expandProgress }) => {
     const isDark = theme === 'dark';
     const colors = TOAST_COLORS.info;
 
@@ -16,6 +16,7 @@ const InfoToast = ({ title, message, theme = 'light', duration }) => {
             toastType="info"
             theme={theme}
             duration={duration}
+            expandProgress={expandProgress}
         />
     );
 };
