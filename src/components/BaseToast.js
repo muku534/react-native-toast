@@ -75,11 +75,11 @@ const BaseToast = ({
         };
     });
 
-    // Text content fades in smoothly with zero horizontal shifting/re-alignment
+    // Text content fades in/out smoothly without clipping or horizontal shifting
     const textAnimatedStyle = useAnimatedStyle(() => {
         const opacity = interpolate(
             expandProgress.value,
-            [0.3, 0.85],
+            [0.45, 0.9],
             [0, 1],
             Extrapolation.CLAMP
         );

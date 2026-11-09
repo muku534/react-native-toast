@@ -82,13 +82,11 @@ class ToastManager extends EventEmitter {
             createdAt: Date.now(),
         };
 
-        // If we've hit the max, queue the toast or dismiss the oldest
+        // If we've reached maxVisible active toasts on screen, queue the incoming toast
+        // so that active toasts are never prematurely dismissed or interrupted mid-animation.
         if (this._activeToasts.size >= this._maxVisible) {
-            // Remove the oldest toast to make room
-            const oldest = this._activeToasts.keys().next().value;
-            if (oldest) {
-                this.remove(oldest);
-            }
+            this._queue.push(toast);
+            return _id;
         }
 
         this._activeToasts.set(_id, toast);
@@ -122,12 +120,12 @@ class ToastManager extends EventEmitter {
     }
 
     /**
-     * Dismiss all active toasts with animation.
+     * Dismiss all active toasts with animation and clear pending queue.
      */
     dismissAll() {
+        this._queue = [];
         const ids = Array.from(this._activeToasts.keys());
         ids.forEach((id) => this.dismiss(id));
-        this._queue = [];
     }
 
     /**

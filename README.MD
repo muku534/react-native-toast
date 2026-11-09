@@ -17,14 +17,16 @@
 
 ---
 
-## ✨ What's New in v2.0.1: Dynamic Island Morphing Alerts
+## ✨ What's New in v2.0.2: Fluid Stack Gliding & Dynamic Island Morphing
 
 We completely overhauled rn-toastify into an **ultra-premium, Apple Dynamic Island-inspired alert system**:
 
+- 🧈 **Fluid Stack Glide-Up Physics**: When an older toast finishes and dismisses, subsequent stacked toasts smoothly and gracefully glide up into their new positions over a 420ms Reanimated cubic-bezier curve (`Easing.bezier(0.25, 0.1, 0.25, 1)`), completely eliminating sudden jumps, layout snaps, or bounces.
 - 🏝️ **2-Phase Circular Morph**: Toasts enter at the top as a compact, glowing round circular badge (`52×52px`), settle cleanly, and then fluidly expand horizontally into a sleek glassmorphic capsule.
 - 🔄 **Fluid Collapse on Dismiss**: Upon dismissal, the pill smoothly collapses horizontally back into the circular badge before floating away.
 - 🌓 **Full Dark & Light Mode**: Real-time adaptive styling with custom glassmorphic tokens, ambient drop shadows, and per-toast `theme` overrides.
-- 🌊 **Liquid Physics**: Powered by `react-native-reanimated` with custom cubic-bezier easing curves and zero text reflow/re-wrapping mid-flight.
+- 🎯 **Pixel-Perfect Text Animations**: Synchronized opacity scaling with zero text reflow or right-border slicing on collapse.
+- 🌊 **Liquid Physics**: Powered by `react-native-reanimated` with custom cubic-bezier easing curves and zero external polyfills. Built-in vector icons.
 - 📦 **Zero-Dependency Core**: Lightweight with zero external event polyfills. Built-in vector icons.
 
 ---
@@ -34,6 +36,7 @@ We completely overhauled rn-toastify into an **ultra-premium, Apple Dynamic Isla
 | Feature | Description |
 |---------|-------------|
 | 🏝️ **Dynamic Island Morph** | 2-phase circle-to-capsule morphing animation with glowing badges. |
+| 🧈 **Fluid Stack Gliding** | Smooth Reanimated transitions when stacked toasts reorder; zero snapping. |
 | 🎨 **6 Built-in Types** | Success, Error, Info, Warning, Loading, Emoji, plus full Custom support. |
 | 👆 **Interactive Swipes** | Swipe horizontally or vertically to intuitively dismiss alerts. |
 | 🌓 **Light & Dark Themes** | Automatically adapts to Light/Dark mode, or can be forced via props. |

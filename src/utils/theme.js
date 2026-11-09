@@ -102,7 +102,7 @@ export const TOAST_THEME = {
 export const TOAST_DEFAULTS = {
     duration: 3000,
     position: 'top',
-    maxVisible: 3,
+    maxVisible: 10,
     iconSize: 20,
     animationDuration: 350,
 };

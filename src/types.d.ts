@@ -69,7 +69,7 @@ export { useToast };
 export interface ToastContainerProps {
     /** Force a specific theme. If omitted or 'auto', follows system preference */
     theme?: 'light' | 'dark' | 'auto';
-    /** Maximum number of visible toasts at once. Default: 3 */
+    /** Maximum number of visible toasts at once. Default: 10 */
     maxVisible?: number;
     /** Default toast position when not specified per-toast. Default: 'top' */
     defaultPosition?: 'top' | 'bottom' | 'center';

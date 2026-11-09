@@ -1,6 +1,6 @@
 {
   "name": "rn-toastify",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "A professional, production-ready toast notification library for React Native inspired by Apple's Dynamic Island. Featuring 2-phase circular morphing capsule alerts, fluid Reanimated transitions, swipe-to-dismiss gestures, queue management, and ultra-premium light/dark themes.",
   "main": "index.js",
   "types": "src/types.d.ts",
@@ -8,6 +8,7 @@
     "index.js",
     "src",
     "README.MD",
+    "CHANGELOG.md",
     "LICENSE"
   ],
   "repository": {

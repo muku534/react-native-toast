@@ -9,7 +9,7 @@ import {
 
 const ToastContainer = ({
     theme: forcedTheme,
-    maxVisible = 3,
+    maxVisible = 10,
     defaultPosition = 'top',
     topOffset = 0,
     bottomOffset = 0,
@@ -148,11 +148,10 @@ const ToastContainer = ({
                             visible={!dismissingIds.has(toast.id)}
                             duration={toast?.options?.duration}
                             position="top"
+                            stackIndex={index}
+                            stackSpacing={toastHeight + toastSpacing}
                             theme={toast?.options?.theme || activeTheme}
-                            style={[
-                                toast?.options?.style || {},
-                                { marginTop: index * (toastHeight + toastSpacing) },
-                            ]}
+                            style={toast?.options?.style || {}}
                             onHide={() => handleToastHide(toast.id)}
                         >
                             {toast.content}
@@ -170,11 +169,10 @@ const ToastContainer = ({
                             visible={!dismissingIds.has(toast.id)}
                             duration={toast?.options?.duration}
                             position="center"
+                            stackIndex={index}
+                            stackSpacing={toastHeight + toastSpacing}
                             theme={toast?.options?.theme || activeTheme}
-                            style={[
-                                toast?.options?.style || {},
-                                { marginTop: index * (toastHeight + toastSpacing) },
-                            ]}
+                            style={toast?.options?.style || {}}
                             onHide={() => handleToastHide(toast.id)}
                         >
                             {toast.content}
@@ -198,10 +196,12 @@ const ToastContainer = ({
                             visible={!dismissingIds.has(toast.id)}
                             duration={toast?.options?.duration}
                             position="bottom"
+                            stackIndex={index}
+                            stackSpacing={toastHeight + toastSpacing}
                             theme={toast?.options?.theme || activeTheme}
                             style={[
                                 toast?.options?.style || {},
-                                { bottom: hp(2) + index * (toastHeight + toastSpacing) },
+                                { bottom: hp(2) },
                             ]}
                             onHide={() => handleToastHide(toast.id)}
                         >

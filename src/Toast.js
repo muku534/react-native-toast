@@ -18,7 +18,17 @@ const CIRCLE_SPRING = {
     mass: 0.9,
 };
 
-const Toast = ({ visible, duration, position = 'top', children, onHide, style, theme }) => {
+const Toast = ({
+    visible,
+    duration,
+    position = 'top',
+    stackIndex = 0,
+    stackSpacing = 68,
+    children,
+    onHide,
+    style,
+    theme,
+}) => {
     const opacity = useSharedValue(0);
     const translateY = useSharedValue(position === 'top' ? -65 : position === 'center' ? 25 : 65);
     const translateX = useSharedValue(0);
@@ -27,6 +37,21 @@ const Toast = ({ visible, duration, position = 'top', children, onHide, style, t
     const hideCalledRef = useRef(false);
     const isHidingRef = useRef(false);
     const hasEnteredRef = useRef(false);
+    const expandTimerRef = useRef(null);
+    const hideTimeoutRef = useRef(null);
+
+    // Smooth stacking transition:
+    // When an older toast is dismissed, subsequent toasts smoothly glide up into their new slot.
+    const resolvedSpacing = position === 'bottom' ? -stackSpacing : stackSpacing;
+    const targetStackY = stackIndex * resolvedSpacing;
+    const stackY = useSharedValue(targetStackY);
+
+    useEffect(() => {
+        stackY.value = withTiming(targetStackY, {
+            duration: 420,
+            easing: Easing.bezier(0.25, 0.1, 0.25, 1),
+        });
+    }, [targetStackY]);
 
     // Keep onHide reference stable so re-renders do NOT re-trigger animations
     const onHideRef = useRef(onHide);
@@ -54,39 +79,44 @@ const Toast = ({ visible, duration, position = 'top', children, onHide, style, t
         if (isHidingRef.current || hideCalledRef.current) return;
         isHidingRef.current = true;
 
+        // Clear any pending entrance expansion or auto-hide timers
+        if (expandTimerRef.current) clearTimeout(expandTimerRef.current);
+        if (hideTimeoutRef.current) clearTimeout(hideTimeoutRef.current);
+
         const exitY = position === 'top' ? -70 : position === 'center' ? 20 : 70;
 
-        // Fallback safety timer
+        // Fallback safety timer (only fires if animations stall)
         const safetyTimer = setTimeout(() => {
             safeOnHide();
-        }, 1200);
+        }, 1800);
 
         // Phase 1: Smoothly and visibly collapse capsule back into the round circle
         expandProgress.value = withTiming(0, {
-            duration: 450,
+            duration: 500,
             easing: Easing.bezier(0.25, 0.1, 0.25, 1),
-        }, (finishedCollapse) => {
-            if (finishedCollapse) {
-                // Phase 2: Once back in circle form, gracefully float up & scale away
-                opacity.value = withTiming(0, {
-                    duration: 320,
-                    easing: Easing.in(Easing.cubic),
-                });
-                scale.value = withTiming(0.4, {
-                    duration: 340,
-                    easing: Easing.in(Easing.cubic),
-                });
-                translateY.value = withTiming(exitY, {
-                    duration: 340,
-                    easing: Easing.in(Easing.cubic),
-                }, (finishedExit) => {
-                    if (finishedExit) {
-                        clearTimeout(safetyTimer);
-                        runOnJS(safeOnHide)();
-                    }
-                });
-            }
         });
+
+        // Phase 2: Gentle dwell as circle badge, then gracefully float up into Dynamic Island & scale away
+        const floatTimer = setTimeout(() => {
+            opacity.value = withTiming(0, {
+                duration: 420,
+                easing: Easing.out(Easing.cubic),
+            });
+            scale.value = withTiming(0.5, {
+                duration: 460,
+                easing: Easing.bezier(0.25, 0.1, 0.25, 1),
+            });
+            translateY.value = withTiming(exitY, {
+                duration: 480,
+                easing: Easing.bezier(0.25, 0.1, 0.25, 1),
+            });
+        }, 620); // 500ms collapse + 120ms calm circle dwell
+
+        // Phase 3: Clean completion and unmount once fully exited
+        const completeTimer = setTimeout(() => {
+            clearTimeout(safetyTimer);
+            safeOnHide();
+        }, 1150);
     }, [position, safeOnHide]);
 
     // Entrance and timer effect — runs ONLY ONCE when mounted/visible
@@ -111,7 +141,7 @@ const Toast = ({ visible, duration, position = 'top', children, onHide, style, t
 
             // Step 2: Dwell pause so the circular badge lands & settles properly first,
             // and only then smoothly expands into the full capsule.
-            const expandTimer = setTimeout(() => {
+            expandTimerRef.current = setTimeout(() => {
                 expandProgress.value = withTiming(1, {
                     duration: 620,
                     easing: Easing.bezier(0.25, 0.1, 0.25, 1), // Liquid smooth expansion curve (gentle start, fluid cruise, soft cushion)
@@ -119,16 +149,15 @@ const Toast = ({ visible, duration, position = 'top', children, onHide, style, t
             }, 950);
 
             // Step 3: Auto-dismiss timer (gives full reading duration after expansion)
-            let hideTimeout;
             if (duration && duration !== Infinity) {
-                hideTimeout = setTimeout(() => {
+                hideTimeoutRef.current = setTimeout(() => {
                     hideToast();
                 }, duration + 1550);
             }
 
             return () => {
-                clearTimeout(expandTimer);
-                if (hideTimeout) clearTimeout(hideTimeout);
+                if (expandTimerRef.current) clearTimeout(expandTimerRef.current);
+                if (hideTimeoutRef.current) clearTimeout(hideTimeoutRef.current);
             };
         } else if (!visible && hasEnteredRef.current) {
             hideToast();
@@ -138,7 +167,7 @@ const Toast = ({ visible, duration, position = 'top', children, onHide, style, t
     const animatedStyle = useAnimatedStyle(() => ({
         opacity: opacity.value,
         transform: [
-            { translateY: translateY.value },
+            { translateY: translateY.value + stackY.value },
             { translateX: translateX.value },
             { scale: scale.value },
         ],
@@ -192,7 +221,7 @@ const Toast = ({ visible, duration, position = 'top', children, onHide, style, t
         [position, hideToast, safeOnHide]
     );
 
-    if (!visible) return null;
+    if (!visible && !hasEnteredRef.current) return null;
 
     // Inject theme, duration, expandProgress and hideToast props to children
     const renderContent = () => {
@@ -210,7 +239,13 @@ const Toast = ({ visible, duration, position = 'top', children, onHide, style, t
     return (
         <Animated.View
             {...panResponder.panHandlers}
-            style={[styles.container, animatedStyle, positionStyle, style]}
+            style={[
+                styles.container,
+                { zIndex: 9999 - stackIndex },
+                animatedStyle,
+                positionStyle,
+                style,
+            ]}
         >
             {renderContent()}
         </Animated.View>
